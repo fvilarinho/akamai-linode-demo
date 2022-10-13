@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.portainer.kubernetes.application.name: database
+  name: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+        io.portainer.kubernetes.application.name: database
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/role
+                    operator: In
+                    values:
+                      - "manager"
+      containers:
+        - image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-database:${BUILD_VERSION}
+          imagePullPolicy: Always
+          name: database
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.portainer.kubernetes.application.name: database
+  name: database
+spec:
+  ports:
+    - name: database-3306-tcp
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+  selector:
+    app: database
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    io.portainer.kubernetes.application.name: backend
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+        io.portainer.kubernetes.application.name: backend
+    spec:
+      containers:
+        - image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-backend:${BUILD_VERSION}
+          imagePullPolicy: Always
+          name: backend
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.portainer.kubernetes.application.name: backend
+  name: backend
+spec:
+  ports:
+    - name: backend-8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: backend
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    io.portainer.kubernetes.application.name: frontend
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        io.portainer.kubernetes.application.name: frontend
+    spec:
+      containers:
+        - image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-frontend:${BUILD_VERSION}
+          imagePullPolicy: Always
+          name: frontend
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.portainer.kubernetes.application.name: frontend
+  name: frontend
+spec:
+  ports:
+    - name: frontend-80-tcp
+      nodePort: 30080
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: frontend-443-tcp
+      nodePort: 30443
+      port: 443
+      protocol: TCP
+      targetPort: 443
+  selector:
+    app: frontend
+  type: NodePort

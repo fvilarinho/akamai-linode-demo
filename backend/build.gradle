@@ -1,0 +1,67 @@
+// Required gradle plugins.
+plugins {
+	id "org.springframework.boot" version "2.7.0"
+	id "org.sonarqube" version "3.3"
+	id "jacoco"
+	id "java"
+	id "war"
+}
+
+// Sonarcloud service attributes.
+sonarqube {
+	properties {
+		property "sonar.organization", System.getenv("SONAR_ORGANIZATION")
+		property "sonar.projectKey", System.getenv("SONAR_PROJECT_KEY")
+		property "sonar.host.url", System.getenv("SONAR_URL")
+		property "sonar.sources", "src/main/java,src/main/webapp,src/main/resources/static/js"
+		property 'sonar.exclusions', ["**/ServletInitializer*", "**/DemoApplication*"]
+		property 'sonar.coverage.exclusions', ["**/ServletInitializer*", "**/DemoApplication*"]
+	}
+}
+
+// Build attributes.
+group = "br.com.demo"
+
+// Default dependencies repository.
+repositories {
+	mavenCentral()
+}
+
+// List of dependencies.
+dependencies {
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa:2.7.0"
+	implementation "org.springframework.boot:spring-boot-starter-jersey:2.7.0"
+	implementation "org.springframework.boot:spring-boot-starter-web:2.7.0"
+	implementation "org.mariadb.jdbc:mariadb-java-client:3.0.3"
+	implementation "org.apache.tomcat.embed:tomcat-embed-jasper:9.0.64"
+
+	testImplementation "org.mockito:mockito-core:4.4.0"
+	testImplementation "org.springframework.boot:spring-boot-starter-test:2.7.0"
+}
+
+// Sonarcloud task dependencies.
+tasks.named("sonarqube").configure {
+	dependsOn test
+}
+
+// Test coverage service attributes and dependencies.
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.enabled true
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"**/ServletInitializer*",
+					"**/DemoApplication*"
+			])
+		}))
+	}
+}
+
+// Test task dependencies.
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
