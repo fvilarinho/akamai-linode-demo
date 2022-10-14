@@ -15,16 +15,14 @@
             "{{Origin Hostname}}",
             "{{Forward Host Header}}"
           ],
-          "enableTrueClientIp": true,
+          "enableTrueClientIp": false,
           "forwardHostHeader": "ORIGIN_HOSTNAME",
           "hostname": "${env.originHostname}",
           "httpPort": 80,
           "httpsPort": 443,
-          "originCertificate": "",
           "originCertsToHonor": "STANDARD_CERTIFICATE_AUTHORITIES",
           "originSni": true,
           "originType": "CUSTOMER",
-          "ports": "",
           "standardCertificateAuthorities": [
             "akamai-permissive"
           ],
@@ -35,14 +33,8 @@
         "name": "cpCode",
         "options": {
           "value": {
-            "cpCodeLimits": null,
-            "createdDate": 1553598114000,
-            "description": "TrainKit",
             "id": 835889,
-            "name": "TrainKit",
-            "products": [
-              "Fresca"
-            ]
+            "name": "TrainKit"
           }
         }
       },

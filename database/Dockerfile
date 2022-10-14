@@ -1,5 +1,5 @@
 # Define the base linux distribution.
-FROM alpine:edge
+FROM alpine:latest
 
 # Define the maintainer of the project.
 LABEL maintainer="fvilarinho@gmail.com"
@@ -14,7 +14,7 @@ ENV SQL_DIR=${HOME_DIR}/sql
 
 # Install essential packages.
 RUN apk update && \
-    apk add --no-cache bash ca-certificates nss curl wget vim net-tools dnsutils openjdk11-jre libxml2 mariadb mariadb-client
+    apk add --no-cache bash ca-certificates nss curl wget vim net-tools bind-tools openjdk11-jre libxml2 mariadb mariadb-client
 
 # Install the required directories.
 RUN addgroup -S group && \
@@ -26,7 +26,7 @@ RUN addgroup -S group && \
     rm -f /etc/my.cnf
 
 # Install the version control.
-RUN wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION-linux-x64.tar.gz | tar xvz && \
+RUN wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION}-linux-x64.tar.gz | tar xvz && \
     mv ./flyway-${FLYWAY_VERSION} /opt && \
     ln -s /opt/flyway-${FLYWAY_VERSION} /opt/flyway && \
     rm -rf /opt/flyway/sql && \

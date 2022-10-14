@@ -19,7 +19,7 @@ if [ -z "$NODE_MANAGER_ID" ]; then
   exit 1
 fi
 
-NODE_WORKER_ID=$1
+NODE_WORKER_ID=$2
 
 # Check if the worker node identifier is defined.
 if [ -z "$NODE_WORKER_ID" ]; then

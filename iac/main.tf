@@ -112,8 +112,8 @@ resource "null_resource" "apply-stack" {
       "wget -qO iac/.env ${var.demo_repo_url}/iac/.env",
       "wget -qO iac/kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
       "wget -qO applyStack.sh ${var.demo_repo_url}/applyStack.sh",
-      "chmod +x applyStack.sh ${linode_instance.demo-node-manager.label} ${linode_instance.demo-node-worker.label}",
-      "./applyStack.sh",
+      "chmod +x applyStack.sh",
+      "./applyStack.sh ${linode_instance.demo-node-manager.label} ${linode_instance.demo-node-worker.label}",
       "rm -rf iac",
       "rm -f applyStack.sh"
     ]

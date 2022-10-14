@@ -1,5 +1,5 @@
 # Define the base linux distribution.
-FROM alpine:edge
+FROM alpine:latest
 
 # Define the maintainer of the project.
 LABEL maintainer="fvilarinho@gmail.com"
@@ -11,7 +11,7 @@ ENV BIN_DIR=${HOME_DIR}/bin
 
 # Install essential packages.
 RUN apk update && \
-    apk add --no-cache bash ca-certificates curl wget vim net-tools dnsutils nginx
+    apk add --no-cache bash ca-certificates curl wget vim net-tools bind-tools nginx
 
 # Install the required directories.
 RUN addgroup -S group && \
