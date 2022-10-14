@@ -98,8 +98,8 @@ resource "null_resource" "apply-stack" {
 
   provisioner "remote-exec" {
     inline = [
-      "kubectl label node ${var.demo_node_manager_label} kubernetes.io/role=manager",
-      "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker",
+      "kubectl label node ${var.demo_node_manager_label} kubernetes.io/role=manager --overwrite",
+      "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker --overwrite",
       "wget -qO .env ${var.demo_repo_url}/iac/.env",
       "wget -qO ./kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
       "wget -qO ./applyStack.sh ${var.demo_repo_url}/iac/applyStack.sh",

@@ -1,7 +1,10 @@
 {
-  "ruleFormat": "v2021-09-22",
   "rules": {
     "name": "default",
+    "children": [
+      "#include:Performance.json",
+      "#include:Offload.json"
+    ],
     "behaviors": [
       {
         "name": "origin",
@@ -51,11 +54,7 @@
         }
       }
     ],
-    "children": [
-      "#include:Performance.json",
-      "#include:Offload.json"
-    ],
-    "comments": "The behaviors in the Default Rule apply to all requests for the property hostname(s) unless another rule overrides the Default Rule settings.",
-    "options": {}
+    "options": {},
+    "comments": "The behaviors in the Default Rule apply to all requests for the property hostname(s) unless another rule overrides the Default Rule settings."
   }
 }

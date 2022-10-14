@@ -16,8 +16,9 @@ if [ ! -f "$DOCKER_COMPOSE_CMD" ]; then
 fi
 
 # Build docker images.
-source ./iac/.env
-$DOCKER_COMPOSE_CMD -f ./iac/docker-compose.yml build
+cd iac
+source ./.env
+$DOCKER_COMPOSE_CMD build
 
 # Save images locally.
 rm -f /tmp/demo-*.tar
@@ -25,3 +26,5 @@ rm -f /tmp/demo-*.tar
 $DOCKER_CMD save $DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/demo-database:$BUILD_VERSION -o /tmp/demo-database.tar
 $DOCKER_CMD save $DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/demo-backend:$BUILD_VERSION -o /tmp/demo-backend.tar
 $DOCKER_CMD save $DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ID/demo-frontend:$BUILD_VERSION -o /tmp/demo-frontend.tar
+
+cd ..

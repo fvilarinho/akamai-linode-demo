@@ -16,8 +16,11 @@ if [ ! -f "$DOCKER_COMPOSE_CMD" ]; then
 fi
 
 # Authenticate in the packaging repository.
-source ./iac/.env
+cd iac
+source ./.env
 echo $DOCKER_REGISTRY_PASSWORD | $DOCKER_CMD login -u $DOCKER_REGISTRY_ID $DOCKER_REGISTRY_URL --password-stdin
 
 # Push images.
-$DOCKER_COMPOSE_CMD -f ./iac/docker-compose.yml push
+$DOCKER_COMPOSE_CMD push
+
+cd ..
