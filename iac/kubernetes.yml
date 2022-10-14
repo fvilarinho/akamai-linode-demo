@@ -1,8 +1,10 @@
+# Stack namespace definition.
 apiVersion: v1
 kind: Namespace
 metadata:
   name: demo
 ---
+# Database service deployment definition.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,6 +37,7 @@ spec:
           name: database
       restartPolicy: Always
 ---
+# Database service port expose definition.
 apiVersion: v1
 kind: Service
 metadata:
@@ -52,6 +55,7 @@ spec:
     app: database
   type: ClusterIP
 ---
+# Backend service deployment definition.
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -74,6 +78,7 @@ spec:
           name: backend
       restartPolicy: Always
 ---
+# Backend service port expose definition.
 apiVersion: v1
 kind: Service
 metadata:
@@ -87,10 +92,15 @@ spec:
       port: 8080
       protocol: TCP
       targetPort: 8080
+    # - name: backend-8000-tcp
+    #   port: 8000
+    #   protocol: TCP
+    #   targetPort: 8000
   selector:
     app: backend
   type: ClusterIP
 ---
+# Frontend service deployment definition.
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -113,6 +123,7 @@ spec:
           name: frontend
       restartPolicy: Always
 ---
+# Frontend service port expose definition.
 apiVersion: v1
 kind: Service
 metadata:
@@ -130,6 +141,7 @@ spec:
     app: frontend
   type: ClusterIP
 ---
+# Ingress definition using Traefik.
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:

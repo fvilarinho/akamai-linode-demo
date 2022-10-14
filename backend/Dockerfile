@@ -19,10 +19,7 @@ RUN addgroup -S group && \
 
 # Install essential packages.
 RUN apk update && \
-    apk add bash \
-            nss \
-            curl \
-            openjdk11-jre
+    apk add --no-cache bash ca-certificates nss curl wget vim net-tools dnsutils openjdk11-jre
 
 # Copy the essentials files to the work directory.
 COPY bin/startup.sh ${BIN_DIR}

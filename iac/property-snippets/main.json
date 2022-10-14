@@ -15,7 +15,7 @@
             "{{Origin Hostname}}",
             "{{Forward Host Header}}"
           ],
-          "enableTrueClientIp": false,
+          "enableTrueClientIp": true,
           "forwardHostHeader": "ORIGIN_HOSTNAME",
           "hostname": "${env.originHostname}",
           "httpPort": 80,

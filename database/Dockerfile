@@ -5,6 +5,7 @@ FROM alpine:edge
 LABEL maintainer="fvilarinho@gmail.com"
 
 # Default environment variables.
+ARG FLYWAY_VERSION=7.2.0
 ENV MYSQL_ROOT_PASSWORD=demo
 ENV HOME_DIR=/home/user
 ENV ETC_DIR=${HOME_DIR}/etc
@@ -13,14 +14,7 @@ ENV SQL_DIR=${HOME_DIR}/sql
 
 # Install essential packages.
 RUN apk update && \
-    apk add bash \
-            libxml2 \
-            mariadb \
-            mariadb-client \
-            nss \
-            openjdk11-jre \
-            vim \
-            curl
+    apk add --no-cache bash ca-certificates nss curl wget vim net-tools dnsutils openjdk11-jre libxml2 mariadb mariadb-client
 
 # Install the required directories.
 RUN addgroup -S group && \
@@ -32,9 +26,9 @@ RUN addgroup -S group && \
     rm -f /etc/my.cnf
 
 # Install the version control.
-RUN wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/7.2.0/flyway-commandline-7.2.0-linux-x64.tar.gz | tar xvz && \
-    mv ./flyway-7.2.0 /opt && \
-    ln -s /opt/flyway-7.2.0 /opt/flyway && \
+RUN wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${FLYWAY_VERSION}/flyway-commandline-${FLYWAY_VERSION-linux-x64.tar.gz | tar xvz && \
+    mv ./flyway-${FLYWAY_VERSION} /opt && \
+    ln -s /opt/flyway-${FLYWAY_VERSION} /opt/flyway && \
     rm -rf /opt/flyway/sql && \
     rm -rf /opt/flyway/jre && \
     rm -f /opt/flyway/conf/flyway.conf && \

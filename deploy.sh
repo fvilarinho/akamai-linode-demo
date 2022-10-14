@@ -1,9 +1,9 @@
 #!/bin/bash
 
-cd iac
-
+# Locate Terraform binary.
 TERRAFORM_CMD=`which terraform`
 
+# Check if the Terraform was found.
 if [ -z "$TERRAFORM_CMD" ]; then
   echo "Terraform is not installed! Please install it first to continue!"
 
@@ -12,21 +12,27 @@ fi
 
 AKAMAI_PROPERTY_ACTIVATION_NETWORK=$1
 
+# Check if the Akamai activation network is defined. If it isn't set the default value.
 if [ -z "$AKAMAI_PROPERTY_ACTIVATION_NETWORK" ]; then
   AKAMAI_PROPERTY_ACTIVATION_NETWORK=staging
 fi
 
 AKAMAI_PROPERTY_ACTIVATION_NOTES=$2
 
+# Check if the Akamai activation notes is defined. If it isn't set the default value.
 if [ -z "$AKAMAI_PROPERTY_ACTIVATION_NOTES" ]; then
   AKAMAI_PROPERTY_ACTIVATION_NOTES="General changes."
 fi
 
+cd iac
+
+source .env
+
+# Execute the provisioning based on the IaC definition file (main.tf).
 $TERRAFORM_CMD init --upgrade
 $TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
                     -var "akamai_property_activation_network=$AKAMAI_PROPERTY_ACTIVATION_NETWORK" \
                     -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES"
-
 $TERRAFORM_CMD apply -auto-approve \
                      -var "linode_token=$LINODE_TOKEN" \
                      -var "akamai_property_activation_network=$AKAMAI_PROPERTY_ACTIVATION_NETWORK" \

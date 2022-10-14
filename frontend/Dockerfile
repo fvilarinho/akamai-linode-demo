@@ -11,9 +11,7 @@ ENV BIN_DIR=${HOME_DIR}/bin
 
 # Install essential packages.
 RUN apk update && \
-    apk add bash \
-            curl \
-            nginx
+    apk add --no-cache bash ca-certificates curl wget vim net-tools dnsutils nginx
 
 # Install the required directories.
 RUN addgroup -S group && \

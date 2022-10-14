@@ -1,29 +1,30 @@
 version: "3"
 
 services:
+  # Database service.
   database:
     build:
       context: ../database
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-database:${BUILD_VERSION}
     container_name: database
     hostname: database
-    ports:
-      - "3306:3306"
-    volumes:
-      - database-data:/var/lib/mysql
+    # ports:
+    #   - "3306:3306"
 
+  # Backend service.
   backend:
     build:
       context: ../backend
     image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-backend:${BUILD_VERSION}
     container_name: backend
     hostname: backend
-    ports:
-      - "8080:8080"
-      - "8000:8000"
+    # ports:
+    #  - "8080:8080"
+    #  - "8000:8000"
     depends_on:
       - database
 
+  # Frontend service.
   frontend:
     build:
       context: ../frontend
@@ -32,9 +33,5 @@ services:
     hostname: frontend
     ports:
       - "80:80"
-      - "443:443"
     depends_on:
       - backend
-
-volumes:
-  database-data:
