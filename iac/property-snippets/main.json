@@ -20,7 +20,7 @@
           ],
           "enableTrueClientIp": false,
           "forwardHostHeader": "ORIGIN_HOSTNAME",
-          "hostname": "",
+          "hostname": "139.144.239.190",
           "httpPort": 30080,
           "httpsPort": 30443,
           "originCertificate": "",
