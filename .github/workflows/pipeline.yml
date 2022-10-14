@@ -30,16 +30,13 @@ jobs:
         with:
           java-version: 11
 
-      - name: 5. Define changes notes
-        run: echo "AKAMAI_PROPERTY_ACTIVATION_NOTES=\"$(git log -n 1 --pretty=format:'%s')\"" >> $GITHUB_ENV
-
-      - name: 6. Compile & Build
+      - name: 5. Compile & Build
         run: ./build.sh
 
-      - name: 7. Unit & Integration Tests
+      - name: 6. Unit & Integration Tests
         run: ./test.sh
 
-      - name: 8. Code analysis
+      - name: 7. Code analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
@@ -48,7 +45,7 @@ jobs:
           SONAR_URL: ${{ secrets.SONAR_URL }}
         run: ./codeAnalysis.sh
 
-      - name: 9. Code quality gate
+      - name: 8. Code quality gate
         uses: jkumar19/sonar-build-breaker@3.0.0
         with:
           sonar_branch: main
@@ -56,30 +53,30 @@ jobs:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           sonar_url: ${{ secrets.SONAR_URL }}
 
-      - name: 10. IaC (Infrastructure as Code) analysis
+      - name: 9. IaC (Infrastructure as Code) analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./iacAnalysis.sh
 
-      - name: 11. Libraries analysis
+      - name: 10. Libraries analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./librariesAnalysis.sh
 
-      - name: 12. Packaging
+      - name: 11. Packaging
         run: ./package.sh
 
-      - name: 13. Packages analysis
+      - name: 12. Packages analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./packageAnalysis.sh
 
-      - name: 14. Publishing
+      - name: 13. Publishing
         env:
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         run: ./publish.sh
 
-      - name: 15. Deploy in staging
+      - name: 14. Deploy in staging
         env:
           TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
@@ -89,6 +86,4 @@ jobs:
           AKAMAI_EDGEGRID_ACCESS_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_ACCESS_TOKEN }}
           AKAMAI_EDGEGRID_CLIENT_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_TOKEN }}
           AKAMAI_EDGEGRID_CLIENT_SECRET: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_SECRET }}
-          AKAMAI_PROPERTY_ACTIVATION_NETWORK: staging
-          AKAMAI_PROPERTY_ACTIVATION_NOTES: ${{ env.AKAMAI_PROPERTY_ACTIVATION_NOTES }}
-        run: ./deploy.sh
+        run: ./deploy.sh "staging" "$(git log -n 1 --pretty=format:'%s')"
