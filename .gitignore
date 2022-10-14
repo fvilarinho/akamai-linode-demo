@@ -1,6 +1,7 @@
 /.idea/
-/.terraform/
-/.gradle/
-/backend/build
-*.tfstate
-*.tfstate.*
+/.gradle*
+/build/
+/backend/build/
+/iac/.terraform*
+/iac/*.tfstate
+/iac/*.tfstate.*
