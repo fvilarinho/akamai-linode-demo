@@ -16,6 +16,5 @@ sed -i -e 's|${DOCKER_REGISTRY_ID}|'"$DOCKER_REGISTRY_ID"'|g' /tmp/kubernetes.ym
 sed -i -e 's|${BUILD_VERSION}|'"$BUILD_VERSION"'|g' /tmp/kubernetes.yml
 cp /tmp/kubernetes.yml ./iac/kubernetes.yml
 rm /tmp/kubernetes.yml
-#rm -rf ./iac
 
 $KUBECTL_CMD apply -f ./iac/kubernetes.yml
