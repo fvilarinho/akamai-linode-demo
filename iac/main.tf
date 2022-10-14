@@ -102,7 +102,7 @@ resource "null_resource" "apply-stack" {
       "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker",
       "wget -O .env ${var.demo_repo_url}/iac/.env",
       "wget -O ./kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
-      "wget -O ./applyStack.sh ${var.demo_repo_url}/applyStack.sh",
+      "wget -O ./applyStack.sh ${var.demo_repo_url}/iac/applyStack.sh",
       "chmod +x ./applyStack.sh",
       "./applyStack.sh",
       "rm -f ./env",

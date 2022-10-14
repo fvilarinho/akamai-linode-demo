@@ -14,7 +14,7 @@
           ],
           "enableTrueClientIp": false,
           "forwardHostHeader": "ORIGIN_HOSTNAME",
-          "hostname": "66.228.35.88",
+          "hostname": "139.144.239.190",
           "httpPort": 80,
           "httpsPort": 443,
           "originCertificate": "",
