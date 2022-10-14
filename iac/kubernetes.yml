@@ -122,11 +122,6 @@ metadata:
     app: frontend
 spec:
   ports:
-    - name: frontend-80-tcp
-      nodePort: 30080
-      port: 80
-      protocol: TCP
-      targetPort: 80
     - name: frontend-443-tcp
       nodePort: 30443
       port: 443
