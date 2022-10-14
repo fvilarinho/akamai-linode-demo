@@ -67,7 +67,7 @@ resource "linode_instance" "demo-node-worker" {
   }
 }
 
-resource "null_resource" "setup-nodes" {
+resource "null_resource" "apply-stack" {
   connection {
     type        = "ssh"
     host        = linode_instance.demo-node-manager.ip_address
@@ -79,7 +79,13 @@ resource "null_resource" "setup-nodes" {
   provisioner "remote-exec" {
     inline = [
       "kubectl label node ${var.demo_node_manager_label} kubernetes.io/role=manager",
-      "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker"
+      "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker",
+      "mkdir ./iac",
+      "wget -O ./iac/.env https://github.com/fvilarinho/akamai-linode-demo/blob/${var.demo_repo_branch}/iac/.env",
+      "wget -O ./iac/kubernetes.yml https://github.com/fvilarinho/akamai-linode-demo/blob/${var.demo_repo_branch}/iac/kubernetes.yml",
+      "wget https://github.com/fvilarinho/akamai-linode-demo/blob/${var.demo_repo_branch}/apply-stack.sh",
+      "chmod +x ./apply-stack.sh",
+      "./apply-stack.sh"
     ]
   }
 
@@ -88,3 +94,4 @@ resource "null_resource" "setup-nodes" {
     linode_instance.demo-node-worker
   ]
 }
+

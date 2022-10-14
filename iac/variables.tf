@@ -1,9 +1,11 @@
 variable "linode_token" {}
 
+variable "demo_repo_branch" {
+  default = "main"
+}
 variable "demo_label" {
   default = "demo"
 }
-
 variable "demo_public_key" {
   default = "~/.ssh/id_rsa.pub"
 }
