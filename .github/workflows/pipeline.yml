@@ -19,22 +19,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 2. Get commit message
-        run: echo "AKAMAI_PROPERTY_ACTIVATION_NOTES=\"$(git log -n 1 --pretty=format:'%s')\"" >> $GITHUB_ENV
-
-      - name: Test
-        run: echo ${{ env.AKAMAI_PROPERTY_ACTIVATION_NOTES }}
-
-      - name: 3. Set up Snyk client
+      - name: 2. Install Snyk client
         uses: snyk/actions/setup@master
 
-      - name: 4. Set up Terraform client
+      - name: 3. Install Terraform client
         run: wget -q https://releases.hashicorp.com/terraform/1.3.2/terraform_1.3.2_linux_amd64.zip; unzip terraform_1.3.2_linux_amd64.zip; mv terraform /usr/local/bin; chmod +x /usr/local/bin/terraform; rm *.zip;
 
-      - name: 5. Set up Compile, Build and Test environment
+      - name: 4. Define Compile, Build & Test environment
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: 5. Define changes notes
+        run: echo "AKAMAI_PROPERTY_ACTIVATION_NOTES=\"$(git log -n 1 --pretty=format:'%s')\"" >> $GITHUB_ENV
 
       - name: 6. Compile & Build
         run: ./build.sh
@@ -42,7 +39,7 @@ jobs:
       - name: 7. Unit & Integration Tests
         run: ./test.sh
 
-      - name: 8. Code Analysis
+      - name: 8. Code analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
@@ -51,7 +48,7 @@ jobs:
           SONAR_URL: ${{ secrets.SONAR_URL }}
         run: ./codeAnalysis.sh
 
-      - name: 9. Code Quality Gate
+      - name: 9. Code quality gate
         uses: jkumar19/sonar-build-breaker@3.0.0
         with:
           sonar_branch: main
@@ -59,12 +56,12 @@ jobs:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           sonar_url: ${{ secrets.SONAR_URL }}
 
-      - name: 10. IaC (Infrastructure as Code) Analysis
+      - name: 10. IaC (Infrastructure as Code) analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./iacAnalysis.sh
 
-      - name: 11. Libraries Analysis
+      - name: 11. Libraries analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./librariesAnalysis.sh
@@ -72,7 +69,7 @@ jobs:
       - name: 12. Packaging
         run: ./package.sh
 
-      - name: 13. Packages Analysis
+      - name: 13. Packages analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./packageAnalysis.sh
@@ -82,7 +79,7 @@ jobs:
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         run: ./publish.sh
 
-      - name: 15. Deploy in Staging
+      - name: 15. Deploy in staging
         env:
           TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
@@ -93,4 +90,5 @@ jobs:
           AKAMAI_EDGEGRID_CLIENT_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_TOKEN }}
           AKAMAI_EDGEGRID_CLIENT_SECRET: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_SECRET }}
           AKAMAI_PROPERTY_ACTIVATION_NETWORK: staging
+          AKAMAI_PROPERTY_ACTIVATION_NOTES: ${{ env.AKAMAI_PROPERTY_ACTIVATION_NOTES }}
         run: ./deploy.sh
