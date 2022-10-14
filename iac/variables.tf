@@ -55,6 +55,12 @@ variable "akamai_contract_id" {
 variable "akamai_product_id" {
   default = "prd_Fresca"
 }
+variable "akamai_property_id" {
+  default = "phonebook.akau.devops.akademo.it"
+}
+variable "akamai_property_edgehostname" {
+  default = "devops.akademo.it.edgesuite.net"
+}
 variable "akamai_notification_email" {
   default = "fvilarin@akamai.com"
 }

@@ -28,7 +28,10 @@ resource "linode_instance" "demo-node-manager" {
   image           = var.demo_node_manager_os
   region          = var.demo_node_manager_region
   type            = var.demo_node_manager_type
-  authorized_keys = [ linode_sshkey.demo.ssh_key ]
+  authorized_keys = [
+    linode_sshkey.demo.ssh_key
+  ]
+  private_ip      = true
 
   provisioner "remote-exec" {
     inline = [
@@ -54,8 +57,13 @@ resource "linode_instance" "demo-node-worker" {
   image           = var.demo_node_worker_os
   region          = var.demo_node_worker_region
   type            = var.demo_node_worker_type
-  authorized_keys = [ linode_sshkey.demo.ssh_key ]
-  depends_on      = [ linode_instance.demo-node-manager ]
+  authorized_keys = [
+    linode_sshkey.demo.ssh_key
+  ]
+  private_ip      = true
+  depends_on      = [
+    linode_instance.demo-node-manager
+  ]
 
   provisioner "remote-exec" {
     inline = [
@@ -110,6 +118,10 @@ resource "null_resource" "apply-stack" {
 }
 
 resource "null_resource" "setup-property" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
   provisioner "local-exec" {
     command = "../setupProperty.sh ${linode_instance.demo-node-manager.ip_address}"
   }
@@ -119,24 +131,24 @@ resource "null_resource" "setup-property" {
   ]
 }
 
-#data "akamai_property_rules_template" "demo-property" {
-#  template_file = abspath("./property-snippets/main.json")
-#}
+data "akamai_property_rules_template" "demo-property" {
+  template_file = abspath("./property-snippets/main.json")
+}
 
-#resource "akamai_property" "demo-property" {
-#  name        = "phonebook.akau.devops.akademo.it"
-#  contract_id = var.akamai_contract_id
-#  group_id    = var.akamai_group_id
-#  product_id  = var.akamai_product_id
-#  rule_format = "v2021-09-22"
-#  hostnames {
-#    cname_from             = "phonebook.akau.devops.akademo.it"
-#    cname_to               = "devops.akademo.it.edgesuite.net"
-#    cert_provisioning_type = "CPS_MANAGED"
-#  }
-#  rules = data.akamai_property_rules_template.demo-property.json
+resource "akamai_property" "demo-property" {
+  name        = var.akamai_property_id
+  contract_id = var.akamai_contract_id
+  group_id    = var.akamai_group_id
+  product_id  = var.akamai_product_id
+  rule_format = "v2021-09-22"
+  hostnames {
+    cname_from             = var.akamai_property_id
+    cname_to               = var.akamai_property_edgehostname
+    cert_provisioning_type = "CPS_MANAGED"
+  }
+  rules = data.akamai_property_rules_template.demo-property.json
 
-#  depends_on = [
-#    null_resource.apply-stack
-#  ]
-#}
+  depends_on = [
+    null_resource.setup-property
+  ]
+}
