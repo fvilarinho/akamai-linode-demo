@@ -39,3 +39,22 @@ variable "demo_node_worker_region" {
 variable "demo_node_worker_os" {
   default = "linode/debian11"
 }
+
+variable "akamai_credentials_filename" {
+  default = "~/.edgerc"
+}
+variable "akamai_credentials_section" {
+  default = "default"
+}
+variable "akamai_group_id" {
+  default = "grp_139286"
+}
+variable "akamai_contract_id" {
+  default = "ctr_3-1A42HS1"
+}
+variable "akamai_product_id" {
+  default = "prd_Fresca"
+}
+variable "akamai_notification_email" {
+  default = "fvilarin@akamai.com"
+}

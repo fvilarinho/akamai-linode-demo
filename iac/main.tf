@@ -3,11 +3,19 @@ terraform {
     linode = {
       source  = "linode/linode"
     }
+    akamai = {
+      source = "akamai/akamai"
+    }
   }
 }
 
 provider "linode" {
   token = var.linode_token
+}
+
+provider "akamai" {
+  edgerc         = var.akamai_credentials_filename
+  config_section = var.akamai_credentials_section
 }
 
 resource "linode_sshkey" "demo" {
@@ -87,11 +95,11 @@ resource "null_resource" "apply-stack" {
       "mkdir ./iac",
       "wget -O ./iac/.env ${var.demo_repo_url}/iac/.env",
       "wget -O ./iac/kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
-      "wget -O ./apply-stack.sh ${var.demo_repo_url}/apply-stack.sh",
-      "chmod +x ./apply-stack.sh",
-      "./apply-stack.sh",
+      "wget -O ./applyStack.sh ${var.demo_repo_url}/applyStack.sh",
+      "chmod +x ./applyStack.sh",
+      "./applyStack.sh",
       "rm -rf ./iac",
-      "rm ./apply-stack.sh"
+      "rm ./applyStack.sh"
     ]
   }
 
@@ -101,3 +109,34 @@ resource "null_resource" "apply-stack" {
   ]
 }
 
+resource "null_resource" "setup-property" {
+  provisioner "local-exec" {
+    command = "../setupProperty.sh ${linode_instance.demo-node-manager.ip_address}"
+  }
+
+  depends_on = [
+    null_resource.apply-stack
+  ]
+}
+
+#data "akamai_property_rules_template" "demo-property" {
+#  template_file = abspath("./property-snippets/main.json")
+#}
+
+#resource "akamai_property" "demo-property" {
+#  name        = "phonebook.akau.devops.akademo.it"
+#  contract_id = var.akamai_contract_id
+#  group_id    = var.akamai_group_id
+#  product_id  = var.akamai_product_id
+#  rule_format = "v2021-09-22"
+#  hostnames {
+#    cname_from             = "phonebook.akau.devops.akademo.it"
+#    cname_to               = "devops.akademo.it.edgesuite.net"
+#    cert_provisioning_type = "CPS_MANAGED"
+#  }
+#  rules = data.akamai_property_rules_template.demo-property.json
+
+#  depends_on = [
+#    null_resource.apply-stack
+#  ]
+#}
