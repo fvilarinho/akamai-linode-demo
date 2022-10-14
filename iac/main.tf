@@ -100,14 +100,14 @@ resource "null_resource" "apply-stack" {
     inline = [
       "kubectl label node ${var.demo_node_manager_label} kubernetes.io/role=manager",
       "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker",
-      "mkdir ./iac",
-      "wget -O ./iac/.env ${var.demo_repo_url}/iac/.env",
-      "wget -O ./iac/kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
+      "wget -O .env ${var.demo_repo_url}/iac/.env",
+      "wget -O ./kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
       "wget -O ./applyStack.sh ${var.demo_repo_url}/applyStack.sh",
       "chmod +x ./applyStack.sh",
       "./applyStack.sh",
-      "rm -rf ./iac",
-      "rm ./applyStack.sh"
+      "rm -f ./env",
+      "rm -f ./kubernetes.yml",
+      "rm -f ./applyStack.sh"
     ]
   }
 
@@ -123,7 +123,7 @@ resource "null_resource" "setup-property" {
   }
 
   provisioner "local-exec" {
-    command = "../setupProperty.sh ${linode_instance.demo-node-manager.ip_address}"
+    command = "./setupProperty.sh ${linode_instance.demo-node-manager.ip_address}"
   }
 
   depends_on = [
@@ -133,6 +133,10 @@ resource "null_resource" "setup-property" {
 
 data "akamai_property_rules_template" "demo-property" {
   template_file = abspath("./property-snippets/main.json")
+
+  depends_on = [
+    null_resource.setup-property
+  ]
 }
 
 resource "akamai_property" "demo-property" {
@@ -150,4 +154,12 @@ resource "akamai_property" "demo-property" {
   depends_on = [
     null_resource.setup-property
   ]
+}
+
+resource "akamai_property_activation" "demo-property" {
+  property_id = akamai_property.demo-property.id
+  version     = akamai_property.demo-property.latest_version
+  network     = upper(var.akamai_property_activation_network)
+  note        = var.akamai_property_activation_notes
+  contact     = [ var.akamai_notification_email ]
 }

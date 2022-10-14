@@ -13,6 +13,8 @@ fi
 
 # Execute the de-provisioning based on the IaC definition file (main.tf).
 $TERRAFORM_CMD destroy -auto-approve \
-                       -var "linode_token=$LINODE_TOKEN"
+                       -var "linode_token=$LINODE_TOKEN" \
+                       -var "akamai_property_activation_network=$AKAMAI_PROPERTY_ACTIVATION_NETWORK" \
+                       -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES"
 
 cd ..

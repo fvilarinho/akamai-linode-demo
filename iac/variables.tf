@@ -64,3 +64,7 @@ variable "akamai_property_edgehostname" {
 variable "akamai_notification_email" {
   default = "fvilarin@akamai.com"
 }
+variable "akamai_property_activation_network"{
+}
+variable "akamai_property_activation_notes" {
+}
