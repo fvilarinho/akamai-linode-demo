@@ -1,0 +1,67 @@
+{
+  "accountId": "act_B-3-1A3M5A3",
+  "contractId": "ctr_3-1A42HS1",
+  "groupId": "grp_139286",
+  "propertyId": "prp_805788",
+  "propertyVersion": 6,
+  "etag": "3eb1c1501cdf0beb779329d6ea3c791e3c70fd2d",
+  "ruleFormat": "v2021-09-22",
+  "rules": {
+    "name": "default",
+    "behaviors": [
+      {
+        "name": "origin",
+        "options": {
+          "cacheKeyHostname": "ORIGIN_HOSTNAME",
+          "compress": true,
+          "customValidCnValues": [
+            "{{Origin Hostname}}",
+            "{{Forward Host Header}}"
+          ],
+          "enableTrueClientIp": false,
+          "forwardHostHeader": "ORIGIN_HOSTNAME",
+          "hostname": "",
+          "httpPort": 30080,
+          "httpsPort": 30443,
+          "originCertificate": "",
+          "originCertsToHonor": "STANDARD_CERTIFICATE_AUTHORITIES",
+          "originSni": true,
+          "originType": "CUSTOMER",
+          "ports": "",
+          "standardCertificateAuthorities": [
+            "akamai-permissive"
+          ],
+          "verificationMode": "CUSTOM"
+        }
+      },
+      {
+        "name": "cpCode",
+        "options": {
+          "value": {
+            "cpCodeLimits": null,
+            "createdDate": 1553598114000,
+            "description": "TrainKit",
+            "id": 835889,
+            "name": "TrainKit",
+            "products": [
+              "Fresca"
+            ]
+          }
+        }
+      },
+      {
+        "name": "allowPost",
+        "options": {
+          "allowWithoutContentLength": false,
+          "enabled": true
+        }
+      }
+    ],
+    "children": [
+      "#include:Performance.json",
+      "#include:Offload.json"
+    ],
+    "comments": "The behaviors in the Default Rule apply to all requests for the property hostname(s) unless another rule overrides the Default Rule settings.",
+    "options": {}
+  }
+}
