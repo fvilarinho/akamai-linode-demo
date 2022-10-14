@@ -212,7 +212,6 @@ resource "akamai_property_activation" "demo" {
   version                        = akamai_property.demo.latest_version
   network                        = upper(var.akamai_property_activation_network)
   contact                        = [ var.akamai_property_activation_email ]
-  note                           = var.akamai_property_activation_notes
   auto_acknowledge_rule_warnings = true
   depends_on                     = [ akamai_property.demo ]
 }
