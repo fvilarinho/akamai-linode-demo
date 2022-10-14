@@ -23,7 +23,7 @@ jobs:
         uses: snyk/actions/setup@master
 
       - name: 3. Set up Terraform client
-        run: wget -q https://releases.hashicorp.com/terraform/1.3.2/terraform_1.3.2_linux_amd64.zip; https://releases.hashicorp.com/terraform/1.3.2/terraform_1.3.2_linux_amd64.zip; mv terraform /usr/local/bin; chmod +x /usr/local/bin/terraform; rm *.zip;
+        run: wget -q https://releases.hashicorp.com/terraform/1.3.2/terraform_1.3.2_linux_amd64.zip; unzip terraform_1.3.2_linux_amd64.zip; mv terraform /usr/local/bin; chmod +x /usr/local/bin/terraform; rm *.zip;
 
       - name: 4. Set up Compile, Build and Test environment
         uses: actions/setup-java@v1
