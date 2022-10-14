@@ -1,22 +1,17 @@
 # Linode API token.
 variable "linode_token" {}
-
-# Default URL of the CI repository.
-variable "demo_repo_url" {
-  default = "https://raw.githubusercontent.com/fvilarinho/akamai-linode-demo/main"
-}
+# Public key to be installed in the cluster nodes.
+variable "linode_public_key" {}
+# Private key to be used to connect in the cluster nodes.
+variable "linode_private_key" {}
 
 # Default label.
 variable "demo_label" {
   default = "demo"
 }
-# Default public key to be installed in the cluster nodes.
-variable "demo_public_key" {
-  default = "~/.ssh/id_rsa.pub"
-}
-# Default private key to be used to connect in the cluster nodes.
-variable "demo_private_key" {
-  default = "~/.ssh/id_rsa"
+# Default URL of the CI repository.
+variable "demo_repo_url" {
+  default = "https://raw.githubusercontent.com/fvilarinho/akamai-linode-demo/main"
 }
 
 # Default load balancer region.
@@ -58,14 +53,14 @@ variable "demo_node_worker_os" {
   default = "linode/debian11"
 }
 
-# Default Akamai credentials filename location.
-variable "akamai_credentials_filename" {
-  default = "~/.edgerc"
-}
-# Default Akamai credentials section.
-variable "akamai_credentials_section" {
-  default = "default"
-}
+# Akamai EdgeGrid host.
+variable "akamai_edgegrid_host" {}
+# Akamai EdgeGrid access token.
+variable "akamai_edgegrid_access_token" {}
+# Akamai EdgeGrid client token.
+variable "akamai_edgegrid_client_token" {}
+# Akamai EdgeGrid client secret.
+variable "akamai_edgegrid_client_secret" {}
 # Default Akamai group.
 variable "akamai_group_id" {
   default = "grp_139286"
@@ -86,14 +81,13 @@ variable "akamai_property_id" {
 variable "akamai_property_edgehostname" {
   default = "devops.akademo.it.edgesuite.net"
 }
-# Default Akamai notification email.
-variable "akamai_notification_email" {
-  default = "fvilarin@akamai.com"
-}
-
 # Akamai network to be used in the property activation.
 variable "akamai_property_activation_network"{
 }
 # Activation notes.
 variable "akamai_property_activation_notes" {
+}
+# Default Akamai activation email.
+variable "akamai_property_activation_email" {
+  default = "fvilarin@akamai.com"
 }

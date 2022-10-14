@@ -1,5 +1,12 @@
 # Required providers.
 terraform {
+  cloud {
+    organization = "fvilarinho"
+
+    workspaces {
+      name = "demo"
+    }
+  }
   required_providers {
     linode = {
       source  = "linode/linode"
@@ -15,16 +22,20 @@ provider "linode" {
   token = var.linode_token
 }
 
-# Akamai credentials definition.
+# Akamai EdgeGrid definition.
 provider "akamai" {
-  edgerc         = var.akamai_credentials_filename
-  config_section = var.akamai_credentials_section
+  config {
+    host = var.akamai_edgegrid_host
+    access_token = var.akamai_edgegrid_access_token
+    client_token = var.akamai_edgegrid_client_token
+    client_secret = var.akamai_edgegrid_client_secret
+  }
 }
 
 # Create a public key to be used by the cluster nodes.
 resource "linode_sshkey" "demo" {
   label   = var.demo_label
-  ssh_key = chomp(file(var.demo_public_key))
+  ssh_key = var.linode_public_key
 }
 
 # Create the manager node of the cluster.
@@ -41,10 +52,10 @@ resource "linode_instance" "demo-node-manager" {
     # Node connection definition.
     connection {
       type        = "ssh"
+      agent       = false
       host        = self.ip_address
       user        = "root"
-      agent       = false
-      private_key = chomp(file(var.demo_private_key))
+      private_key = var.linode_private_key
     }
 
     # Installation script.
@@ -73,10 +84,10 @@ resource "linode_instance" "demo-node-worker" {
     # Node connection definition.
     connection {
       type        = "ssh"
-      user        = "root"
       agent       = false
-      private_key = chomp(file(var.demo_private_key))
       host        = self.ip_address
+      user        = "root"
+      private_key = var.linode_private_key
     }
 
     # Installation script.
@@ -100,10 +111,10 @@ resource "null_resource" "apply-stack" {
     # Manager node connection definition.
     connection {
       type        = "ssh"
+      agent       = false
       host        = linode_instance.demo-node-manager.ip_address
       user        = "root"
-      agent       = false
-      private_key = chomp(file(var.demo_private_key))
+      private_key = var.linode_private_key
     }
 
     # Installation script.
@@ -200,7 +211,7 @@ resource "akamai_property_activation" "demo" {
   property_id = akamai_property.demo.id
   version     = akamai_property.demo.latest_version
   network     = upper(var.akamai_property_activation_network)
-  contact     = [ var.akamai_notification_email ]
+  contact     = [ var.akamai_property_activation_email ]
   note        = var.akamai_property_activation_notes
   depends_on  = [ akamai_property.demo ]
 }
