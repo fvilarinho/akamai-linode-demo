@@ -14,6 +14,7 @@ cd iac
 source .env
 
 # Execute the de-provisioning based on the IaC definition file (main.tf).
+$TERRAFORM_CMD init --upgrade
 $TERRAFORM_CMD destroy -auto-approve \
                        -var "linode_token=$LINODE_TOKEN" \
                        -var "linode_public_key=$LINODE_PUBLIC_KEY" \
