@@ -8,13 +8,17 @@ if [ ! -f "$KUBECTL_CMD" ]; then
   exit 1
 fi
 
+cd iac
+
 source .env
 
 cp ./kubernetes.yml /tmp/kubernetes.yml
 sed -i -e 's|${DOCKER_REGISTRY_URL}|'"$DOCKER_REGISTRY_URL"'|g' /tmp/kubernetes.yml
 sed -i -e 's|${DOCKER_REGISTRY_ID}|'"$DOCKER_REGISTRY_ID"'|g' /tmp/kubernetes.yml
 sed -i -e 's|${BUILD_VERSION}|'"$BUILD_VERSION"'|g' /tmp/kubernetes.yml
+cp /tmp/kubernetes.yml ./kubernetes.yaml
+rm -f /tmp/kubernetes.yml
 
-$KUBECTL_CMD apply -f /tmp/kubernetes.yml
+$KUBECTL_CMD apply -f ./kubernetes.yaml
 
-rm /tmp/kubernetes.yml
+cd ..

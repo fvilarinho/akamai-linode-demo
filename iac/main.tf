@@ -100,13 +100,13 @@ resource "null_resource" "apply-stack" {
     inline = [
       "kubectl label node ${var.demo_node_manager_label} kubernetes.io/role=manager --overwrite",
       "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker --overwrite",
-      "wget -qO .env ${var.demo_repo_url}/iac/.env",
-      "wget -qO ./kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
-      "wget -qO ./applyStack.sh ${var.demo_repo_url}/iac/applyStack.sh",
+      "mkdir ./iac",
+      "wget -qO ./iac/.env ${var.demo_repo_url}/iac/.env",
+      "wget -qO ./iac/kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
+      "wget -qO ./applyStack.sh ${var.demo_repo_url}/applyStack.sh",
       "chmod +x ./applyStack.sh",
       "./applyStack.sh",
-      "rm -f ./env",
-      "rm -f ./kubernetes.yml",
+      "rm -rf ./iac",
       "rm -f ./applyStack.sh"
     ]
   }
