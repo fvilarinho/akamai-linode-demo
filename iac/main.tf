@@ -117,26 +117,13 @@ resource "null_resource" "apply-stack" {
   ]
 }
 
-resource "null_resource" "setup-property" {
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-
-  provisioner "local-exec" {
-    command = "./setupProperty.sh ${linode_instance.demo-node-manager.ip_address}"
-  }
-
-  depends_on = [
-    null_resource.apply-stack
-  ]
-}
-
 data "akamai_property_rules_template" "demo-property" {
   template_file = abspath("./property-snippets/main.json")
-
-  depends_on = [
-    null_resource.setup-property
-  ]
+  variables {
+    name = "originHostname"
+    value = linode_instance.demo-node-manager.ip_address
+    type = "string"
+  }
 }
 
 resource "akamai_property" "demo-property" {
@@ -151,7 +138,7 @@ resource "akamai_property" "demo-property" {
   }
   rules = data.akamai_property_rules_template.demo-property.json
   depends_on = [
-    null_resource.setup-property
+    null_resource.apply-stack
   ]
 }
 
