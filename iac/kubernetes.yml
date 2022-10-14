@@ -121,15 +121,22 @@ metadata:
   labels:
     app: frontend
 spec:
-  type: LoadBalancer
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: 8443
       protocol: TCP
-      name: http
-    - port: 443
-      targetPort: 8443
-      protocol: TCP
-      name: https
+      targetPort: 443
   selector:
     app: frontend
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: demo
+spec:
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 8443
