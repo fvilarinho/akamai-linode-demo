@@ -144,7 +144,6 @@ resource "akamai_property" "demo-property" {
   contract_id = var.akamai_contract_id
   group_id    = var.akamai_group_id
   product_id  = var.akamai_product_id
-  rule_format = "v2021-09-22"
   hostnames {
     cname_from             = var.akamai_property_id
     cname_to               = var.akamai_property_edgehostname
