@@ -89,7 +89,9 @@ resource "null_resource" "apply-stack" {
       "wget -O ./iac/kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
       "wget -O ./apply-stack.sh ${var.demo_repo_url}/apply-stack.sh",
       "chmod +x ./apply-stack.sh",
-      "./apply-stack.sh"
+      "./apply-stack.sh",
+      "rm -rf ./iac",
+      "rm ./apply-stack.sh"
     ]
   }
 
