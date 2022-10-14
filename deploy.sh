@@ -38,6 +38,8 @@ rm -f /tmp/credentials.tfrc.json
 
 source .env
 
+echo $AKAMAI_PROPERTY_ACTIVATION_NOTES
+
 # Execute the provisioning based on the IaC definition file (main.tf).
 $TERRAFORM_CMD init --upgrade
 $TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
