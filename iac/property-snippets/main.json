@@ -1,10 +1,4 @@
 {
-  "accountId": "act_B-3-1A3M5A3",
-  "contractId": "ctr_3-1A42HS1",
-  "groupId": "grp_139286",
-  "propertyId": "prp_805788",
-  "propertyVersion": 6,
-  "etag": "3eb1c1501cdf0beb779329d6ea3c791e3c70fd2d",
   "ruleFormat": "v2021-09-22",
   "rules": {
     "name": "default",
@@ -21,8 +15,8 @@
           "enableTrueClientIp": false,
           "forwardHostHeader": "ORIGIN_HOSTNAME",
           "hostname": "66.228.35.88",
-          "httpPort": 8080,
-          "httpsPort": 8443,
+          "httpPort": 80,
+          "httpsPort": 443,
           "originCertificate": "",
           "originCertsToHonor": "STANDARD_CERTIFICATE_AUTHORITIES",
           "originSni": true,
