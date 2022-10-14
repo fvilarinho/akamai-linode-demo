@@ -147,7 +147,6 @@ resource "akamai_property" "demo-property" {
     cert_provisioning_type = "CPS_MANAGED"
   }
   rules = data.akamai_property_rules_template.demo-property.json
-
   depends_on = [
     null_resource.setup-property
   ]

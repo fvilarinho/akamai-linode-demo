@@ -121,11 +121,11 @@ metadata:
   labels:
     app: frontend
 spec:
-  type: NodePort
   ports:
-    - name: https
+    - name: frontend-443-tcp
       port: 443
+      protocol: TCP
       targetPort: 443
-      nodePort: 30443
   selector:
     app: frontend
+  type: ClusterIP
