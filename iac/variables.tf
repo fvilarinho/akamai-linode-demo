@@ -1,8 +1,9 @@
 variable "linode_token" {}
 
-variable "demo_repo_branch" {
-  default = "main"
+variable "demo_repo_url" {
+  default = "https://raw.githubusercontent.com/fvilarinho/akamai-linode-demo/main"
 }
+
 variable "demo_label" {
   default = "demo"
 }

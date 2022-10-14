@@ -81,9 +81,9 @@ resource "null_resource" "apply-stack" {
       "kubectl label node ${var.demo_node_manager_label} kubernetes.io/role=manager",
       "kubectl label node ${var.demo_node_worker_label} kubernetes.io/role=worker",
       "mkdir ./iac",
-      "wget -O ./iac/.env https://github.com/fvilarinho/akamai-linode-demo/blob/${var.demo_repo_branch}/iac/.env",
-      "wget -O ./iac/kubernetes.yml https://github.com/fvilarinho/akamai-linode-demo/blob/${var.demo_repo_branch}/iac/kubernetes.yml",
-      "wget https://github.com/fvilarinho/akamai-linode-demo/blob/${var.demo_repo_branch}/apply-stack.sh",
+      "wget -O ./iac/.env ${var.demo_repo_url}/iac/.env",
+      "wget -O ./iac/kubernetes.yml ${var.demo_repo_url}/iac/kubernetes.yml",
+      "wget -O ./apply-stack.sh ${var.demo_repo_url}/apply-stack.sh",
       "chmod +x ./apply-stack.sh",
       "./apply-stack.sh"
     ]
