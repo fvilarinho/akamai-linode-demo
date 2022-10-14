@@ -68,6 +68,10 @@ resource "linode_instance" "demo-node-worker" {
 }
 
 resource "null_resource" "apply-stack" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
   connection {
     type        = "ssh"
     host        = linode_instance.demo-node-manager.ip_address

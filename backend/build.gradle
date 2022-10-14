@@ -20,7 +20,10 @@ sonarqube {
 }
 
 // Build attributes.
-group = "br.com.demo"
+java {
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
+}
 
 // Default dependencies repository.
 repositories {
