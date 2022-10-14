@@ -31,14 +31,13 @@ RUN chown -R user:group ${HOME_DIR} && \
     chmod -R o-rwx ${HOME_DIR} && \
     chmod +x ${BIN_DIR}/*.sh && \
     ln -s ${ETC_DIR}/nginx/conf.d/default.conf /etc/nginx/http.d/default.conf && \
-    ln -s ${ETC_DIR}/nginx/ssl /etc/nginx/ssl && \
     ln -s ${BIN_DIR}/startup.sh /entrypoint.sh
 
 # Set default work directory.
 WORKDIR ${HOME_DIR}
 
 # Set the default port.
-EXPOSE 80 443
+EXPOSE 80
 
 # Boot script.
 ENTRYPOINT ["/entrypoint.sh"]

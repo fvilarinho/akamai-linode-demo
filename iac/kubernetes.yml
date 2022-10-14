@@ -122,10 +122,10 @@ metadata:
     app: frontend
 spec:
   ports:
-    - name: frontend-443-tcp
-      port: 443
+    - name: frontend-80-tcp
+      port: 80
       protocol: TCP
-      targetPort: 443
+      targetPort: 80
   selector:
     app: frontend
   type: ClusterIP
