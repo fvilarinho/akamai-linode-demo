@@ -30,10 +30,13 @@ jobs:
         with:
           java-version: 11
 
-      - name: 5. Compile, Build and Test
+      - name: 5. Compile & Build
         run: ./build.sh
 
-      - name: 6. Code Analysis - White-box testing (SAST)
+      - name: 6. Unit & Integration Tests
+        run: ./test.sh
+
+      - name: 7. Code Analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
@@ -42,7 +45,7 @@ jobs:
           SONAR_URL: ${{ secrets.SONAR_URL }}
         run: ./codeAnalysis.sh
 
-      - name: 7. Code Analysis - Quality Gate Checking
+      - name: 8. Code Quality Gate
         uses: jkumar19/sonar-build-breaker@3.0.0
         with:
           sonar_branch: main
@@ -50,20 +53,20 @@ jobs:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           sonar_url: ${{ secrets.SONAR_URL }}
 
-      - name: 8. IaC (Infrastructure as Code) Analysis - White-box testing (SAST)
+      - name: 9. IaC (Infrastructure as Code) Analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./iacAnalysis.sh
 
-      - name: 9. Libraries Analysis - White-box testing (SAST)
+      - name: 10. Libraries Analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./librariesAnalysis.sh
 
-      - name: 10. Packaging
+      - name: 11. Packaging
         run: ./package.sh
 
-      - name: 11. Package Analysis - White-box testing (SAST)
+      - name: 12. Packages Analysis
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: ./packageAnalysis.sh
