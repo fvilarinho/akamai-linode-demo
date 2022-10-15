@@ -25,7 +25,7 @@ jobs:
       - name: 3. Install Terraform client
         run: wget -q https://releases.hashicorp.com/terraform/1.3.2/terraform_1.3.2_linux_amd64.zip; unzip terraform_1.3.2_linux_amd64.zip; mv terraform /usr/local/bin; chmod +x /usr/local/bin/terraform; rm *.zip;
 
-      - name: 4. Define Compile, Build & Test environment
+      - name: 4. Install Compiler
         uses: actions/setup-java@v1
         with:
           java-version: 11
