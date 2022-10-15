@@ -81,10 +81,16 @@ variable "akamai_property_id" {
 variable "akamai_property_edgehostname" {
   default = "devops.akademo.it.edgesuite.net"
 }
-# Default Akamai network to be used in the property activation.
-variable "akamai_property_activation_network"{
-  default = "staging"
+# Akamai network to be used in the property activation.
+variable "akamai_property_activation_network"{}
+# Notes to be used in the property activation.
+variable "akamai_property_activation_notes"{}
+# Store the Akamai property activation notes.
+variable "akamai_property_activation_notes_filename" {
+  default = ".akamai_property_activation_notes"
 }
+# Last notes of the property activation.
+variable "akamai_property_last_activation_notes"{}
 # Default Akamai activation email.
 variable "akamai_property_activation_email" {
   default = "fvilarin@akamai.com"

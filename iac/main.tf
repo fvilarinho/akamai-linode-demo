@@ -206,12 +206,26 @@ resource "akamai_property" "demo" {
   }
 }
 
-# Activate the Akamai property.
+# Definition of the Akamai property activation.
+locals {
+  akamai_property_latest_version          = akamai_property.demo.latest_version
+  akamai_property_last_activation_version = ((var.akamai_property_activation_network == "" || var.akamai_property_activation_network == "staging") ? akamai_property.demo.staging_version : akamai_property.demo.production_version)
+  akamai_property_changed                 = (local.akamai_property_latest_version != local.akamai_property_last_activation_version)
+  akamai_property_activation_notes        = (local.akamai_property_changed ? var.akamai_property_activation_notes : var.akamai_property_last_activation_notes)
+}
+
 resource "akamai_property_activation" "demo" {
   property_id                    = akamai_property.demo.id
   version                        = akamai_property.demo.latest_version
   network                        = upper(var.akamai_property_activation_network)
   contact                        = [ var.akamai_property_activation_email ]
+  note                           = local.akamai_property_activation_notes
   auto_acknowledge_rule_warnings = true
   depends_on                     = [ akamai_property.demo ]
+}
+
+resource "local_file" "akamai_property_activation_notes" {
+  filename = var.akamai_property_activation_notes_filename
+  content  = local.akamai_property_activation_notes
+  depends_on = [ akamai_property_activation.demo ]
 }
