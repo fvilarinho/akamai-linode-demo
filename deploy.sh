@@ -24,9 +24,9 @@ sed -i -e 's|${TERRAFORM_CLOUD_TOKEN}|'"$TERRAFORM_CLOUD_TOKEN"'|g' /tmp/credent
 cp -f /tmp/credentials.tfrc.json ~/.terraform.d
 rm -f /tmp/credentials.tfrc.json
 
+# Execute the provisioning based on the IaC definition file (main.tf).
 $TERRAFORM_CMD init --upgrade
 
-# Execute the provisioning based on the IaC definition file (main.tf).
 if [ -z "$AKAMAI_PROPERTY_ACTIVATION_NOTES" ]; then
   GIT_CMD=`which git`
 
