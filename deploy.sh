@@ -24,6 +24,8 @@ sed -i -e 's|${TERRAFORM_CLOUD_TOKEN}|'"$TERRAFORM_CLOUD_TOKEN"'|g' /tmp/credent
 cp -f /tmp/credentials.tfrc.json ~/.terraform.d
 rm -f /tmp/credentials.tfrc.json
 
+$TERRAFORM_CMD init --upgrade
+
 # Execute the provisioning based on the IaC definition file (main.tf).
 if [ -z "$AKAMAI_PROPERTY_ACTIVATION_NOTES" ]; then
   GIT_CMD=`which git`
@@ -36,7 +38,6 @@ fi
 AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES="$($TERRAFORM_CMD state show local_file.akamai_property_activation_notes | grep content | awk -F " = " '{ print $2 }')"
 AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES=$(echo "$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES" | sed 's/"//g')
 
-$TERRAFORM_CMD init --upgrade
 $TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
                     -var "linode_public_key=$LINODE_PUBLIC_KEY" \
                     -var "linode_private_key=$LINODE_PRIVATE_KEY" \
