@@ -1,26 +1,26 @@
 Getting Started
 ---------------
-This is a demo project for education/training purposes of DevOps. All the services used below are in the Cloud to facilitate the understanding.
-The architecture uses microservices and containerization.
+This is a demo project for education/training purposes of DevOps. All the services used below are in the Cloud to
+facilitate the understanding. The architecture uses microservices and containerization.
 
-[![Master pipeline](https://github.com/fvilarinho/demo/actions/workflows/master.yml/badge.svg)](https://github.com/fvilarinho/demo/actions/workflows/master.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fvilarinho_demo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fvilarinho_demo)
+[![CI/CD Pipeline](https://github.com/fvilarinho/akamai-linode-demo/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fvilarinho/akamai-linode-demo/actions/workflows/pipeline.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fvilarinho_akamai-linode-demo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fvilarinho_akamai-linode-demo)
 
-The pipeline uses [`GitHub Actions`](https://github.com/features/actions) that contains a pipeline with 7 main phases described below:
+The pipeline uses [`GitHub Actions`](https://github.com/features/actions) that contains 8 main phases described below:
 
-### Compile, Build and Test
-All commands of this phase are defined in `build.sh` file. 
-It checks if there are no compile/build errors.
+### Compile, Build & Test
+All commands of this phase are defined in `build.sh` and `test.sh` files. 
+It checks compile/build errors and also does unit and integration tests.
 The tools used are:
-- [`Gradle`](https://www.gradle.org) - Tool to automate the build of the code.
+- [`Gradle`](https://www.gradle.org)
 
-### Code Analysis - White-box testing (SAST)
+### Code analysis
 All commands of this phase are defined in `codeAnalysis.sh` file. 
-It checks Bugs, Vulnerabilities, Hotspots, Code Smells, Duplications and Coverage of the code.
-If these metrics don't comply with the defined Quality Gate, the pipeline won't continue.
+It checks bugs, vulnerabilities, hotspots, code smells, duplications in the code and also the testing coverage.
+If these metrics don't comply with the defined quality gate, the pipeline won't execute the next phases.
 The tools used are:
-- [`Gradle`](https://www.gradle.org) - Tool to automate the SAST analysis of the code.
-- [`Sonar`](https://sonardcloud.io) - Service that provides SAST analysis of the code.
+- [`Gradle`](https://www.gradle.org)
+- [`Sonar`](https://sonardcloud.io)
 
 Environments variables needed in this phase:
 - `GITHUB_TOKEN`: API Key used by Sonar client to communicate with GitHub.
@@ -29,12 +29,17 @@ Environments variables needed in this phase:
 - `SONAR_PROJECT_KEY`: Identifier of the Sonar project.
 - `SONAR_URL`: URL of the Sonar server.
 
-### Libraries Analysis - White-box testing (SAST)
+### IaC (Infrastructure ad Code) analysis
+All commands of this phase are defined in `iacAnalysis.sh` file.
+It checks for vulnerabilities the IaC files (Dockerfiles, Compose and Kubernetes manifests).
+The tools used are:
+- [`Snyk`](https://snyk.io)
+
+### Libraries analysis
 All commands of this phase are defined in `librariesAnalysis.sh` file. 
 It checks for vulnerabilities in internal and external libraries used in the code.
 The tools used are:
-- [`Gradle`](https://www.gradle.org) - Tool to automate the SAST analysis of the libraries.
-- [`Snyk`](https://snyk.io) - Service that provides SAST analysis of the libraries.
+- [`Snyk`](https://snyk.io)
 
 Environments variables needed in this phase:
 - `SNYK_TOKEN`: API Key used by Snyk to store the generated analysis.
@@ -42,116 +47,102 @@ Environments variables needed in this phase:
 ### Packaging
 All commands of this phase are defined in `package.sh` file.
 It encapsulates all binaries in a Docker image.
-Once the code and libraries were checked, it's time build the package to be used in the next phases.
+Once the code, libraries and IaC files were checked, it's time build the package to be used in the next phases.
 The tools/services used are:
-- [`Docker Compose`](https://docs.docker.com/compose) - Tool to build the images.
+- [`Docker Compose`](https://docs.docker.com/compose)
 
-Environments variables needed in this phase:
-- `DOCKER_REGISTRY_URL`: URL of the repository of packages.
+The packages naming is defined in the `.env` file located in the `iac` directory.
+- `DOCKER_REGISTRY_URL`: URL of the packages repository.
 - `DOCKER_REGISTRY_ID`: Identifier of the packages in the repository.
+- `BUILD_VERASION`: Version of the packages.
 
-### Package Analysis - White-box testing (SAST)
+### Package analysis
 All commands of this phase are defined in `packageAnalysis.sh` file.
-It checks for vulnerabilities in the generated package.
+It checks for vulnerabilities in the generated packages.
 The tools/services used are:
-- [`Gradle`](https://www.gradle.org) - Tool to automate the SAST analysis of the package.
-- [`Snyk`](https://snyk.io) - Service that provides SAST analysis of the package.
+- [`Snyk`](https://snyk.io)
 
 Environments variables needed in this phase:
 - `SNYK_TOKEN`: API Key used by Snyk to store the generated analysis.
 
 ### Publishing
 All commands of this phase are defined in `publish.sh` file.
-It publishes the package in the Docker registry (GitHub Packages).
+It publishes the packages in the repository.
 The tools/services used are:
-- [`Docker Compose`](https://docs.docker.com/compose) - Tool to push the images into the Docker registry.
-- [`Github Packages`](https://github.com) - Docker registry where the images are stored.
-- 
+- [`Docker Compose`](https://docs.docker.com/compose)
+- [`Github Packages`](https://github.com)
 
 Environments variables needed in this phase:
-- `DOCKER_REGISTRY_URL`: URL of the repository of packages.
-- `DOCKER_REGISTRY_ID`: Identifier of the packages in the repository.
-- `DOCKER_REGISTRY_USER`: Username of the repository of packages.
-- `DOCKER_REGISTRY_PASSWORD`: Password of the repository of packages.
+- `DOCKER_REGISTRY_PASSWORD`: Password of the packages repository.
 
 ### Deploy
 All commands of this phase are defined in `deploy.sh` file.
-It deploys the package in a K3S (Kubernetes) cluster.
+It deploys the packages in a K3S (Kubernetes) cluster (2 nodes) with a load balancer in Linode and Akamai.
 The tools/services used are:
-- [`Terraform`](https://terraform.io) - Infrastructure as a Code platform. 
-- [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) - Kubernetes Orchestration tool. 
-- [`Portainer`](https://portainer.io) - Kubernetes Orchestration UI.
-- [`Linode`](https://www.linode.com) - Cloud provider where the infrastructure will be provisioned.
-- [`Datadog Agent`](https://www.datadoghq.com) - Monitoring agent.
+- [`Terraform`](https://terraform.io) 
+- [`Linode`](https://www.linode.com)
+- [`Akamai`](https://www.akamai.com)
 
 Environments variables needed in this phase:
-- `DOCKER_REGISTRY_URL`: URL of the repository of packages.
-- `DOCKER_REGISTRY_ID`: Identifier of the packages in the repository.
-- `LINODE_TOKEN`: Token used to authenticate in the Linode platform.
-- `LINODE_SSH_KEY`: Public key used to be installed in the provisioned infrastructure.
-- `K3S_TOKEN`: Token used by the Kubernetes cluster.
-- `TERRAFORM_TOKEN`: Token used to authenticate in the Terraform platform.
-- `DATADOG_AGENT_KEY`: API key used to authenticate in the monitoring platform.
+- `TERRAFORM_CLOUD_TOKEN`: Token used to authenticate with Terraform Cloud.
+- `LINODE_TOKEN`: Token used to authenticate with Linode.
+- `LINODE_PUBLIC_KEY`: Public key used to be installed in the provisioned infrastructure.
+- `LINODE_PRIVATE_KEY`: Private key used to connect in the provisioned infrastructure.
+- `AKAMAI_EDGEGRID_HOST`: Hostname used by the Akamai Edgegrid credentials.
+- `AKAMAI_EDGEGRID_ACCESS_TOKEN`: Access token used by the Akamai Edgegrid credentials.
+- `AKAMAI_EDGEGRID_CLIENT_TOKEN`: Client token used by the Akamai Edgegrid credentials.
+- `AKAMAI_EDGEGRID_CLIENT_SECRET`: Client secret used by the Akamai Edgegrid credentials.
+- `AKAMAI_PROPERTY_ACTIVATION_NOTES`: Notes to be used in the Akamai provisioning.
 
-Comments
---------
-### If any phase got errors or violations, the pipeline will stop.
-### All environments variables must also have a secret with the same name. 
-### You can define the secret in the repository settings. 
-### DON'T EXPOSE OR COMMIT ANY SECRET IN THE PROJECT.
+### Comments
+- **If any phase got errors or violations, the pipeline will stop.**
+- **All environments variables must also have a secret with the same name.** 
+- **You can define the secret in the repository settings.**
+- **DON'T EXPOSE OR COMMIT ANY SECRET IN THE PROJECT.**
 
-Architecture
-------------
+### Architecture
 The application uses:
 - [`Java 11`](https://www.oracle.com/br/java/technologies/javase-jdk11-downloads.html) - Programming Language.
-- [`Spring Boot 2.7.0`](https://spring.io) - Development Framework.
-- [`Gradle 6.8.3`](https://www.gradle.org) - Automation build tool.
-- [`Mockito 3`](https://site.mockito.org/) - Test framework.
-- [`JUnit 5`](https://junit.org/junit5/) - Test framework.
-- [`MariaDB`](https://mariadb.com/) - Database server.
-- [`NGINX 1.18`](https://www.nginx.com/****) - Web server.
-- [`Docker 20.10.14`](https://www.docker.com) - Containerization tool.
-- [`K3S 1.21.7`](https://k3s.io/) - Containerization tool.
+- [`Spring Boot 2.7.x`](https://spring.io) - Web development framework.
+- [`Gradle 6.8.x`](https://www.gradle.org) - Automation tool.
+- [`Mockito 3.x`](https://site.mockito.org/) - Test framework.
+- [`JUnit 5.x`](https://junit.org/junit5/) - Test framework.
+- [`MariaDB 10.x`](https://mariadb.com/) - Database server.
+- [`Nginx 1.x`](https://www.nginx.com/****) - Web server.
+- [`Docker 20.10.x`](https://www.docker.com) - Containerization platform.
+- [`K3S 1.24.x`](https://k3s.io/) - Containers orquestrator.
 
 For further documentation please check the documentation of each tool/service.
 
-How to install
---------------
-1. Linux operating system.
+### How to install
+1. Linux or MacOS operating system.
 2. You need an IDE such as [IntelliJ](https://www.jetbrains.com/pt-br/idea).
 3. You need an account in the following services:
-`GitHub, Sonarcloud, Snyk, Linode and Terraform Cloud`.
+`GitHub, Sonarcloud, Snyk, Linode, Terraform Cloud and Akamai`.
 4. You need to set the environment variables described above in you system.
-5. The API Keys for each service must be defined in the UI of each service. Please refer the service documentation.
+5. The tokens and credentials for each service must be defined in the UI of each service. Please refer the service 
+documentation.
 6. Fork this project from GitHub.
 7. Import the project in IDE.
 8. Commit some changes in the code and follow the execution of the pipeline in GitHub.
 
-How to run it locally
-------------------
+### How to run it locally
 1. In the project directory, execute the scripts below:
-`./build.sh; ./package.sh; docker-compose -f ./iac/docker-compose.yml up`
+`./build.sh; ./package.sh; ./start.sh`
 2. Open the URL `http://localhost` in your preferred browser after the boot.
 
-How to run it in the cloud
---------------------------------
-1. Run the `deploy.sh` script that will provision your infrastructure, the kubernetes cluster/orchestration and the application microservices.
-2. Open the URL `http://<infrastructure-ip>:30080` in your preferred browser after the boot.
-
-Other Resources
-----------------
-- [Official Gradle documentation](https://docs.gradle.org)
-- [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.0/gradle-plugin/reference/html/)
-- [Spring Web](https://docs.spring.io/spring-boot/docs/2.7.0/reference/htmlsingle/#boot-features-developing-web-applications)
-- [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.7.0/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-- [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-- [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-
-All opinions and standard described here are my own.
+### How to run it in the Cloud
+1. Run the `deploy.sh` script that will provision the infrastructure.
+2. Open the URL `http://<load-balancer-ip|akamai-property-hostname>` in your preferred browser, after the boot.
 
 That's it! Now enjoy and have fun!
 
-Contact
--------
-- LinkedIn: https://www.linkedin.com/in/fvilarinho
-- e-Mail: fvilarinho@gmail.com
+### Contact
+**LinkedIn:**
+- https://www.linkedin.com/in/fvilarinho
+
+**e-Mail:**
+- fvilarin@akamai.com
+- fvilarinho@gmail.com
+- fvilarinho@outlook.com
+- me@vila.net.br
