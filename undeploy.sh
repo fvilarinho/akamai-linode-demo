@@ -9,9 +9,19 @@ if [ -z "$TERRAFORM_CMD" ]; then
   exit 1
 fi
 
+# Authenticate in Terraform Cloud to store the states.
+if [ ! -d "~/.terraform.d" ]; then
+  mkdir -p ~/.terraform.d
+fi
+
 cd iac
 
 source .env
+
+cp -f credentials.tfrc.json /tmp
+sed -i -e 's|${TERRAFORM_CLOUD_TOKEN}|'"$TERRAFORM_CLOUD_TOKEN"'|g' /tmp/credentials.tfrc.json
+cp -f /tmp/credentials.tfrc.json ~/.terraform.d
+rm -f /tmp/credentials.tfrc.json
 
 # Execute the de-provisioning based on the IaC definition file (main.tf).
 $TERRAFORM_CMD init --upgrade
