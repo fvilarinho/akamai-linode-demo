@@ -1,7 +1,7 @@
 Getting Started
 ---------------
 This is a demo project for education/training purposes of DevOps. All the services used below are in the Cloud to
-facilitate the understanding. The architecture uses microservices and containerization.
+facilitate the understanding.
 
 [![CI/CD Pipeline](https://github.com/fvilarinho/akamai-linode-demo/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fvilarinho/akamai-linode-demo/actions/workflows/pipeline.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fvilarinho_akamai-linode-demo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fvilarinho_akamai-linode-demo)
