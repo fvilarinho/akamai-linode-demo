@@ -38,7 +38,7 @@ fi
 AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES="$($TERRAFORM_CMD state show local_file.akamai_property_activation_notes | grep content | awk -F " = " '{ print $2 }')"
 AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES=$(echo "$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES" | sed 's/"//g')
 
-echo $$AKAMAI_PROPERTY_ACTIVATION_NOTES
+echo $AKAMAI_PROPERTY_ACTIVATION_NOTES
 echo $AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES
 
 $TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
