@@ -25,9 +25,9 @@ provider "linode" {
 # Akamai EdgeGrid definition.
 provider "akamai" {
   config {
-    host = var.akamai_edgegrid_host
-    access_token = var.akamai_edgegrid_access_token
-    client_token = var.akamai_edgegrid_client_token
+    host          = var.akamai_edgegrid_host
+    access_token  = var.akamai_edgegrid_access_token
+    client_token  = var.akamai_edgegrid_client_token
     client_secret = var.akamai_edgegrid_client_secret
   }
 }
@@ -184,8 +184,8 @@ data "akamai_property_rules_template" "demo" {
 
   # Set the Origin Hostname pointing to cluster load balancer hostname.
   variables {
-    name = "originHostname"
-    type = "string"
+    name  = "originHostname"
+    type  = "string"
     value = linode_nodebalancer.demo.hostname
   }
 }
@@ -208,8 +208,8 @@ resource "akamai_property" "demo" {
 
 # Definition of the Akamai property activation.
 locals {
-  akamai_property_changed                 = (akamai_property.demo.latest_version != akamai_property.demo.staging_version)
-  akamai_property_activation_notes        = (local.akamai_property_changed ? var.akamai_property_activation_notes : var.akamai_property_last_activation_notes)
+  akamai_property_changed          = (akamai_property.demo.latest_version != akamai_property.demo.staging_version)
+  akamai_property_activation_notes = (local.akamai_property_changed ? var.akamai_property_activation_notes : var.akamai_property_last_activation_notes)
 }
 
 resource "akamai_property_activation" "demo" {
@@ -222,7 +222,7 @@ resource "akamai_property_activation" "demo" {
 }
 
 resource "local_file" "akamai_property_activation_notes" {
-  filename = var.akamai_property_activation_notes_filename
-  content  = local.akamai_property_activation_notes
+  filename   = var.akamai_property_activation_notes_filename
+  content    = local.akamai_property_activation_notes
   depends_on = [ akamai_property_activation.demo ]
 }
