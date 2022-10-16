@@ -76,7 +76,7 @@ jobs:
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         run: ./publish.sh
 
-      - name: 14. Deploy in staging
+      - name: 14. Deploy
         env:
           TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
@@ -86,6 +86,5 @@ jobs:
           AKAMAI_EDGEGRID_ACCESS_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_ACCESS_TOKEN }}
           AKAMAI_EDGEGRID_CLIENT_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_TOKEN }}
           AKAMAI_EDGEGRID_CLIENT_SECRET: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_SECRET }}
-          AKAMAI_PROPERTY_ACTIVATION_NETWORK: staging
           AKAMAI_PROPERTY_ACTIVATION_NOTES:
         run: ./deploy.sh
