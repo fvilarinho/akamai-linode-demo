@@ -22,9 +22,9 @@ cd iac
 
 # Check if the purge content definition exists.
 if [ -f "purgeContent.json" ]; then
-  HOSTNAME=`$JQ_CMD -r '.hostname' purgeContent.json 2>/dev/null`
-  URLS_TO_PURGE=`$JQ_CMD -r '.urls[]' purgeContent.json 2>/dev/null`
-  CPCODES_TO_PURGE=`$JQ_CMD -r '.cpCodes[]' purgeContent.json 2>/dev/null`
+  HOSTNAME=`cat purgeContent.json | $JQ_CMD -r '.hostname'`
+  URLS_TO_PURGE=`cat purgeContent.json | $JQ_CMD -r '.urls[]'`
+  CPCODES_TO_PURGE=`cat purgeContent.json | $JQ_CMD -r '.cpCodes[]'`
 
   # Check if the hostname is defined.
   if [ ! -z "$HOSTNAME" ]; then
