@@ -39,7 +39,7 @@ if [ -f "purgeContent.json" ]; then
     if [ ! -z "$URLS_TO_PURGE" ]; then
       for URL_TO_PURGE in $URLS_TO_PURGE
       do
-        $DOCKER_CMD run --name purge -it -v /tmp/.edgerc:/root/.edgerc akamai/purge:latest akamai purge invalidate --staging $HOSTNAME/$URL_TO_PURGE
+        $DOCKER_CMD run --name purge -v /tmp/.edgerc:/root/.edgerc akamai/purge:latest akamai purge invalidate --staging $HOSTNAME/$URL_TO_PURGE
         $DOCKER_CMD rm purge
       done
     fi
@@ -48,7 +48,7 @@ if [ -f "purgeContent.json" ]; then
     if [ ! -z "$CPCODES_TO_PURGE" ]; then
       for CPCODE_TO_PURGE in $CPCODES_TO_PURGE
       do
-        $DOCKER_CMD run --name purge -it -v /tmp/.edgerc:/root/.edgerc akamai/purge:latest akamai purge invalidate --staging --cpcode $CPCODE_TO_PURGE
+        $DOCKER_CMD run --name purge -v /tmp/.edgerc:/root/.edgerc akamai/purge:latest akamai purge invalidate --staging --cpcode $CPCODE_TO_PURGE
         $DOCKER_CMD rm purge
       done
     fi
