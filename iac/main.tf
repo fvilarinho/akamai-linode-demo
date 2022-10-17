@@ -2,7 +2,6 @@
 terraform {
   cloud {
     organization = "fvilarinho"
-
     workspaces {
       name = "demo"
     }
