@@ -6,7 +6,7 @@ facilitate the understanding.
 [![CI/CD Pipeline](https://github.com/fvilarinho/akamai-linode-demo/actions/workflows/pipeline.yml/badge.svg)](https://github.com/fvilarinho/akamai-linode-demo/actions/workflows/pipeline.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fvilarinho_akamai-linode-demo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fvilarinho_akamai-linode-demo)
 
-The pipeline uses [`GitHub Actions`](https://github.com/features/actions) that contains 8 main phases described below:
+The pipeline uses [`GitHub Actions`](https://github.com/features/actions) that contains 9 main phases described below:
 
 ### Compile, Build & Test
 All commands of this phase are defined in `build.sh` and `test.sh` files. 
@@ -92,7 +92,20 @@ Environments variables needed in this phase:
 - `AKAMAI_EDGEGRID_ACCESS_TOKEN`: Access token used by the Akamai Edgegrid credentials.
 - `AKAMAI_EDGEGRID_CLIENT_TOKEN`: Client token used by the Akamai Edgegrid credentials.
 - `AKAMAI_EDGEGRID_CLIENT_SECRET`: Client secret used by the Akamai Edgegrid credentials.
-- `AKAMAI_PROPERTY_ACTIVATION_NOTES`: Notes to be used in the Akamai provisioning.
+
+### Purge static content
+All commands of this phase are defined in `deploy.sh` file.
+It purges the static content server by the Akamai. What is needed to be purged is defined in the 
+`iac/purgeContent.json` file.
+The tools/services used are:
+- [`Akamai Purge CLI`](https://github.com/akamai/cli-purge)
+- [`Jq`](https://stedolan.github.io/jq/)
+
+Environments variables needed in this phase:
+- `AKAMAI_EDGEGRID_HOST`: Hostname used by the Akamai Edgegrid credentials.
+- `AKAMAI_EDGEGRID_ACCESS_TOKEN`: Access token used by the Akamai Edgegrid credentials.
+- `AKAMAI_EDGEGRID_CLIENT_TOKEN`: Client token used by the Akamai Edgegrid credentials.
+- `AKAMAI_EDGEGRID_CLIENT_SECRET`: Client secret used by the Akamai Edgegrid credentials.
 
 ### Comments
 - **If any phase got errors or violations, the pipeline will stop.**
