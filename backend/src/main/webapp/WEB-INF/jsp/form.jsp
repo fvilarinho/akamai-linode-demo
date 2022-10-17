@@ -29,7 +29,7 @@
                 <%
                     if(request.getAttribute("nameMessage") != null || request.getAttribute("phoneMessage") != null){
                 %>
-                        <img src="images/error.jpg" width="300"/>
+                        <img src="images/error.jpg" width="300" alt=""/>
                 <%
                     }
                 %>
