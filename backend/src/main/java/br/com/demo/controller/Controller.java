@@ -111,21 +111,21 @@ public class Controller{
 
         return "form";
     }
-    
-    // Endpoint to log data.
-    @PostMapping("/log")
-    public String log(@RequestBody String body){
-        try{
-            Object object = mapper.readValue(body, Object.class);
-            
-            logger.log(Level.INFO, "{0}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object));
+
+        // Endpoint to log data.
+        @PostMapping("/log")
+        public String log(@RequestBody String body){
+            try{
+                Object object = mapper.readValue(body, Object.class);
+
+                logger.log(Level.INFO, "{0}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object));
+            }
+            catch(IOException e){
+                logger.log(Level.SEVERE, "Something wrong happened: {0}, ", e.getMessage());
+
+                throw new IllegalArgumentException();
+            }
+
+            return "blank";
         }
-        catch(IOException e){
-            logger.log(Level.SEVERE, "Something wrong happened: {0}, ", e.getMessage());
-            
-            throw new IllegalArgumentException();
-        }
-    
-        return "blank";
-    }
 }

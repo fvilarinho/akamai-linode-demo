@@ -25,8 +25,17 @@
                 <br/>
                 <button onclick="if(!confirm('Do you confirm the save of this item?')) { return false; }" class="btn btn-primary">Save</button>
                 <button onclick="document.forms[0].action = 'search';" class="btn btn-primary">Back</button>
+                <br/><br/>
+                <%
+                    if(request.getAttribute("nameMessage") != null || request.getAttribute("phoneMessage") != null){
+                %>
+                        <img src="images/error.jpg" width="300"/>
+                <%
+                    }
+                %>
             </div>
         </div>
+
         <jsp:include page="inputHandler.jsp"/>
     </form>
 </div>
