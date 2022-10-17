@@ -34,7 +34,7 @@ class PhonebookServiceTest{
         Assertions.assertEquals(list, mockList);
     }
     
-    // Find a phonebook by id.
+    // Find a phonebook by id called by the controller.
     @Test
     void findById(){
         Mockito.when(persistence.findById(1)).thenReturn(Optional.of(mockItem));
