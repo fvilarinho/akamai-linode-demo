@@ -1,0 +1,10 @@
+{
+  "hostname": "http://phonebook.akau.devops.akademo.it",
+  "urls": [
+    "/images/logo.png",
+    "/js/vanilla-masker.min.js"
+  ],
+  "cpCodes": [
+    835889
+  ]
+}

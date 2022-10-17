@@ -27,36 +27,48 @@ rm -f /tmp/credentials.tfrc.json
 # Execute the provisioning based on the IaC definition file (main.tf).
 $TERRAFORM_CMD init --upgrade
 
-if [ -z "$AKAMAI_PROPERTY_ACTIVATION_NOTES" ]; then
-  GIT_CMD=`which git`
+status=`echo $?`
 
-  if [ -f "$GIT_CMD" ]; then
-    AKAMAI_PROPERTY_ACTIVATION_NOTES=$($GIT_CMD log -n 1 --pretty=format:'%s')
+if [ $status -eq 0 ]; then
+  if [ -z "$AKAMAI_PROPERTY_ACTIVATION_NOTES" ]; then
+    GIT_CMD=`which git`
+
+    if [ -f "$GIT_CMD" ]; then
+      AKAMAI_PROPERTY_ACTIVATION_NOTES=$($GIT_CMD log -n 1 --pretty=format:'%s')
+    fi
+  fi
+
+  AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES="$($TERRAFORM_CMD state show local_file.akamai_property_activation_notes | grep content | awk -F " = " '{ print $2 }')"
+  AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES=$(echo "$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES" | sed 's/"//g')
+
+  $TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
+                      -var "linode_public_key=$LINODE_PUBLIC_KEY" \
+                      -var "linode_private_key=$LINODE_PRIVATE_KEY" \
+                      -var "akamai_edgegrid_host=$AKAMAI_EDGEGRID_HOST" \
+                      -var "akamai_edgegrid_access_token=$AKAMAI_EDGEGRID_ACCESS_TOKEN" \
+                      -var "akamai_edgegrid_client_token=$AKAMAI_EDGEGRID_CLIENT_TOKEN" \
+                      -var "akamai_edgegrid_client_secret=$AKAMAI_EDGEGRID_CLIENT_SECRET" \
+                      -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
+                      -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
+
+  status=`echo $?`
+
+  if [ $status -eq 0 ]; then
+    $TERRAFORM_CMD apply -auto-approve \
+                         -var "linode_token=$LINODE_TOKEN" \
+                         -var "linode_public_key=$LINODE_PUBLIC_KEY" \
+                         -var "linode_private_key=$LINODE_PRIVATE_KEY" \
+                         -var "akamai_edgegrid_host=$AKAMAI_EDGEGRID_HOST" \
+                         -var "akamai_edgegrid_access_token=$AKAMAI_EDGEGRID_ACCESS_TOKEN" \
+                         -var "akamai_edgegrid_client_token=$AKAMAI_EDGEGRID_CLIENT_TOKEN" \
+                         -var "akamai_edgegrid_client_secret=$AKAMAI_EDGEGRID_CLIENT_SECRET" \
+                         -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
+                         -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
+
+    status=`echo $?`
   fi
 fi
 
-AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES="$($TERRAFORM_CMD state show local_file.akamai_property_activation_notes | grep content | awk -F " = " '{ print $2 }')"
-AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES=$(echo "$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES" | sed 's/"//g')
-
-
-$TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
-                    -var "linode_public_key=$LINODE_PUBLIC_KEY" \
-                    -var "linode_private_key=$LINODE_PRIVATE_KEY" \
-                    -var "akamai_edgegrid_host=$AKAMAI_EDGEGRID_HOST" \
-                    -var "akamai_edgegrid_access_token=$AKAMAI_EDGEGRID_ACCESS_TOKEN" \
-                    -var "akamai_edgegrid_client_token=$AKAMAI_EDGEGRID_CLIENT_TOKEN" \
-                    -var "akamai_edgegrid_client_secret=$AKAMAI_EDGEGRID_CLIENT_SECRET" \
-                    -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
-                    -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
-$TERRAFORM_CMD apply -auto-approve \
-                     -var "linode_token=$LINODE_TOKEN" \
-                     -var "linode_public_key=$LINODE_PUBLIC_KEY" \
-                     -var "linode_private_key=$LINODE_PRIVATE_KEY" \
-                     -var "akamai_edgegrid_host=$AKAMAI_EDGEGRID_HOST" \
-                     -var "akamai_edgegrid_access_token=$AKAMAI_EDGEGRID_ACCESS_TOKEN" \
-                     -var "akamai_edgegrid_client_token=$AKAMAI_EDGEGRID_CLIENT_TOKEN" \
-                     -var "akamai_edgegrid_client_secret=$AKAMAI_EDGEGRID_CLIENT_SECRET" \
-                     -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
-                     -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
-
 cd ..
+
+exit $status

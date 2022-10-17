@@ -87,3 +87,11 @@ jobs:
           AKAMAI_EDGEGRID_CLIENT_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_TOKEN }}
           AKAMAI_EDGEGRID_CLIENT_SECRET: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_SECRET }}
         run: ./deploy.sh
+
+      - name: 15. Purge static content
+        env:
+          AKAMAI_EDGEGRID_HOST: ${{ secrets.AKAMAI_EDGEGRID_HOST }}
+          AKAMAI_EDGEGRID_ACCESS_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_ACCESS_TOKEN }}
+          AKAMAI_EDGEGRID_CLIENT_TOKEN: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_TOKEN }}
+          AKAMAI_EDGEGRID_CLIENT_SECRET: ${{ secrets.AKAMAI_EDGEGRID_CLIENT_SECRET }}
+        run: ./purgeContent.sh
