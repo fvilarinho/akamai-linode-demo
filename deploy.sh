@@ -19,6 +19,13 @@ cd iac
 
 source .env
 
+echo "[terraform]" > .edgerc
+echo "host = $AKAMAI_EDGEGRID_HOST" >> .edgerc
+echo "access_token = $AKAMAI_EDGEGRID_ACCESS_TOKEN" >> .edgerc
+echo "client_token = $AKAMAI_EDGEGRID_CLIENT_TOKEN" >> .edgerc
+echo "client_secret = $AKAMAI_EDGEGRID_CLIENT_SECRET" >> .edgerc
+echo "account_key = $AKAMAI_EDGEGRID_ACCOUNT_KEY" >> .edgerc
+
 cp -f credentials.tfrc.json /tmp
 sed -i -e 's|${TERRAFORM_CLOUD_TOKEN}|'"$TERRAFORM_CLOUD_TOKEN"'|g' /tmp/credentials.tfrc.json
 cp -f /tmp/credentials.tfrc.json ~/.terraform.d
@@ -44,10 +51,6 @@ if [ $status -eq 0 ]; then
   $TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
                       -var "linode_public_key=$LINODE_PUBLIC_KEY" \
                       -var "linode_private_key=$LINODE_PRIVATE_KEY" \
-                      -var "akamai_edgegrid_host=$AKAMAI_EDGEGRID_HOST" \
-                      -var "akamai_edgegrid_access_token=$AKAMAI_EDGEGRID_ACCESS_TOKEN" \
-                      -var "akamai_edgegrid_client_token=$AKAMAI_EDGEGRID_CLIENT_TOKEN" \
-                      -var "akamai_edgegrid_client_secret=$AKAMAI_EDGEGRID_CLIENT_SECRET" \
                       -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
                       -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
 
@@ -58,10 +61,6 @@ if [ $status -eq 0 ]; then
                          -var "linode_token=$LINODE_TOKEN" \
                          -var "linode_public_key=$LINODE_PUBLIC_KEY" \
                          -var "linode_private_key=$LINODE_PRIVATE_KEY" \
-                         -var "akamai_edgegrid_host=$AKAMAI_EDGEGRID_HOST" \
-                         -var "akamai_edgegrid_access_token=$AKAMAI_EDGEGRID_ACCESS_TOKEN" \
-                         -var "akamai_edgegrid_client_token=$AKAMAI_EDGEGRID_CLIENT_TOKEN" \
-                         -var "akamai_edgegrid_client_secret=$AKAMAI_EDGEGRID_CLIENT_SECRET" \
                          -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
                          -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
 

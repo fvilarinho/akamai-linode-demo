@@ -23,12 +23,8 @@ provider "linode" {
 
 # Akamai EdgeGrid definition.
 provider "akamai" {
-  config {
-    host          = var.akamai_edgegrid_host
-    access_token  = var.akamai_edgegrid_access_token
-    client_token  = var.akamai_edgegrid_client_token
-    client_secret = var.akamai_edgegrid_client_secret
-  }
+  edgerc         = ".edgerc"
+  config_section = "terraform"
 }
 
 # Create a public key to be used by the cluster nodes.
@@ -176,6 +172,13 @@ resource "linode_nodebalancer_node" "demo-node-worker" {
   depends_on      = [ linode_nodebalancer_config.demo ]
 }
 
+resource "akamai_cp_code" "default" {
+  name        = var.demo_label
+  product_id  = var.akamai_product_id
+  contract_id = var.akamai_contract_id
+  group_id    = var.akamai_group_id
+}
+
 # Definition of the Akamai property ruletree.
 data "akamai_property_rules_template" "demo" {
   template_file = abspath("property-snippets/main.json")
@@ -186,6 +189,12 @@ data "akamai_property_rules_template" "demo" {
     name  = "originHostname"
     type  = "string"
     value = linode_nodebalancer.demo.hostname
+  }
+
+  variables {
+    name  = "cpCode"
+    type  = "number"
+    value = replace(akamai_cp_code.default.id, "cpc_", "")
   }
 }
 

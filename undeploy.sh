@@ -18,6 +18,13 @@ cd iac
 
 source .env
 
+echo "[terraform]" > .edgerc
+echo "host = $AKAMAI_APIS_HOST" >> .edgerc
+echo "access_token = $AKAMAI_APIS_ACCESS_TOKEN" >> .edgerc
+echo "client_token = $AKAMAI_APIS_CLIENT_TOKEN" >> .edgerc
+echo "client_secret = $AKAMAI_APIS_CLIENT_SECRET" >> .edgerc
+echo "account_key = $AKAMAI_APIS_ACCOUNT_KEY" >> .edgerc
+
 cp -f credentials.tfrc.json /tmp
 sed -i -e 's|${TERRAFORM_CLOUD_TOKEN}|'"$TERRAFORM_CLOUD_TOKEN"'|g' /tmp/credentials.tfrc.json
 cp -f /tmp/credentials.tfrc.json ~/.terraform.d
@@ -28,10 +35,6 @@ $TERRAFORM_CMD init --upgrade
 $TERRAFORM_CMD destroy -auto-approve \
                        -var "linode_token=$LINODE_TOKEN" \
                        -var "linode_public_key=$LINODE_PUBLIC_KEY" \
-                       -var "linode_private_key=$LINODE_PRIVATE_KEY" \
-                       -var "akamai_edgegrid_host=$AKAMAI_EDGEGRID_HOST" \
-                       -var "akamai_edgegrid_access_token=$AKAMAI_EDGEGRID_ACCESS_TOKEN" \
-                       -var "akamai_edgegrid_client_token=$AKAMAI_EDGEGRID_CLIENT_TOKEN" \
-                       -var "akamai_edgegrid_client_secret=$AKAMAI_EDGEGRID_CLIENT_SECRET"
+                       -var "linode_private_key=$LINODE_PRIVATE_KEY"
 
 cd ..

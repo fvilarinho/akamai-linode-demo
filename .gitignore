@@ -5,3 +5,4 @@
 /iac/.terraform*
 /iac/*.tfstate
 /iac/*.tfstate.*
+/iac/.edgerc

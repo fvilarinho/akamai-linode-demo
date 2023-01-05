@@ -53,21 +53,13 @@ variable "demo_node_worker_os" {
   default = "linode/debian11"
 }
 
-# Akamai EdgeGrid host.
-variable "akamai_edgegrid_host" {}
-# Akamai EdgeGrid access token.
-variable "akamai_edgegrid_access_token" {}
-# Akamai EdgeGrid client token.
-variable "akamai_edgegrid_client_token" {}
-# Akamai EdgeGrid client secret.
-variable "akamai_edgegrid_client_secret" {}
 # Default Akamai group.
 variable "akamai_group_id" {
-  default = "grp_139286"
+  default = "grp_218127"
 }
 # Default Akamai contract.
 variable "akamai_contract_id" {
-  default = "ctr_3-1A42HS1"
+  default = "ctr_1-1NC95D"
 }
 # Default Akamai product.
 variable "akamai_product_id" {
@@ -75,11 +67,11 @@ variable "akamai_product_id" {
 }
 # Default Akamai property.
 variable "akamai_property_id" {
-  default = "phonebook.akau.devops.akademo.it"
+  default = "demo.vila.net.br"
 }
 # Default Akamai Edge Hostname.
 variable "akamai_property_edgehostname" {
-  default = "devops.akademo.it.edgesuite.net"
+  default = "vila.net.br.edgesuite.net"
 }
 # Notes to be used in the property activation.
 variable "akamai_property_activation_notes"{
