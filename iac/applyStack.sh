@@ -27,17 +27,20 @@ if [ -z "$NODE_MANAGER_IP" ]; then
   exit 1
 fi
 
-source .env
-
 # Download kubeconfig to be able to connect in the cluster.
+echo "$LINODE_PRIVATE_KEY" > /tmp/.id_rsa
+chmod og-rwx /tmp/.id_rsa
 rm -rf ./kubeconfig*
-$SCP_CMD -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$NODE_MANAGER_IP:/etc/rancher/k3s/k3s.yaml /tmp/kubeconfig
+$SCP_CMD -i /tmp/.id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$NODE_MANAGER_IP:/etc/rancher/k3s/k3s.yaml /tmp/kubeconfig
 sed -i -e 's|127.0.0.1|'"$NODE_MANAGER_IP"'|g' /tmp/kubeconfig
 cp /tmp/kubeconfig ./kubeconfig
+rm -rf /tmp/.id_rsa
 
 export KUBECONFIG=./kubeconfig
 
 # Prepare the stack manifest.
+source .env
+
 cp ./kubernetes.yml /tmp/kubernetes.yml
 sed -i -e 's|${DOCKER_REGISTRY_URL}|'"$DOCKER_REGISTRY_URL"'|g' /tmp/kubernetes.yml
 sed -i -e 's|${DOCKER_REGISTRY_ID}|'"$DOCKER_REGISTRY_ID"'|g' /tmp/kubernetes.yml

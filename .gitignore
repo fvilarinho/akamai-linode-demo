@@ -6,3 +6,4 @@
 /iac/*.tfstate
 /iac/*.tfstate.*
 /iac/.edgerc
+/iac/kubeconfig
