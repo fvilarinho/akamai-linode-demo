@@ -8,6 +8,18 @@ variable "linode" {
   default = {
     "region": "us-east",
     "os": "linode/debian11",
+    "balancer":{
+      "connectionThrottle": 20,
+      "healthCheck": {
+        "protocol": "http",
+        "port": 80,
+        "attempts": 3,
+        "timeout": 30,
+        "path": "/",
+        "stickiness": "http_cookie"
+        "algorithm": "source"
+      }
+    },
     "manager": {
       "label": "demo-node-manager",
       "type": "g6-standard-2"

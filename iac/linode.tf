@@ -32,7 +32,8 @@ resource "linode_instance" "manager" {
     # Installation script.
     inline = [
       "hostnamectl set-hostname ${var.linode.manager.label}",
-      "pkill -9 dpkg; pkill -9 apt; apt -y update; apt -y upgrade",
+      "apt -y update",
+      "apt -y upgrade",
       "apt -y install bash ca-certificates curl wget htop dnsutils net-tools vim",
       "export K3S_TOKEN=${var.linode_token}",
       "curl -sfL https://get.k3s.io | sh -"
@@ -64,7 +65,8 @@ resource "linode_instance" "worker" {
     # Installation script.
     inline = [
       "hostnamectl set-hostname ${var.linode.worker.label}",
-      "pkill -9 dpkg; pkill -9 apt; apt -y update; apt -y upgrade",
+      "apt -y update",
+      "apt -y upgrade",
       "apt -y install bash ca-certificates curl wget htop dnsutils net-tools vim",
       "curl -sfL https://get.k3s.io | K3S_URL=https://${linode_instance.manager.ip_address}:6443 K3S_TOKEN=${var.linode_token} sh -"
     ]
@@ -73,25 +75,23 @@ resource "linode_instance" "worker" {
 
 # Create the cluster load balancer instance.
 resource "linode_nodebalancer" "application" {
-  label      = var.application.label
-  region     = var.linode.region
-  depends_on = [
-    linode_instance.manager,
-    linode_instance.worker
-  ]
+  label                = var.application.label
+  region               = var.linode.region
+  client_conn_throttle = var.linode.balancer.connectionThrottle
+  depends_on           = [ linode_instance.manager, linode_instance.worker ]
 }
 
 # Create the cluster load balancer configuration.
 resource "linode_nodebalancer_config" "application" {
   nodebalancer_id = linode_nodebalancer.application.id
-  port            = 80
-  protocol        = "http"
-  check           = "http"
-  check_path      = "/"
-  check_attempts  = 3
-  check_timeout   = 30
-  stickiness      = "http_cookie"
-  algorithm       = "source"
+  port            = var.linode.balancer.healthCheck.port
+  protocol        = var.linode.balancer.healthCheck.protocol
+  check           = var.linode.balancer.healthCheck.protocol
+  check_path      = var.linode.balancer.healthCheck.path
+  check_attempts  = var.linode.balancer.healthCheck.attempts
+  check_timeout   = var.linode.balancer.healthCheck.timeout
+  stickiness      = var.linode.balancer.healthCheck.stickiness
+  algorithm       = var.linode.balancer.healthCheck.algorithm
   depends_on      = [ linode_nodebalancer.application ]
 }
 
@@ -100,7 +100,7 @@ resource "linode_nodebalancer_node" "manager" {
   label           = linode_instance.manager.label
   nodebalancer_id = linode_nodebalancer.application.id
   config_id       = linode_nodebalancer_config.application.id
-  address         = "${linode_instance.manager.private_ip_address}:80"
+  address         = "${linode_instance.manager.private_ip_address}:${var.linode.balancer.healthCheck.port}"
   weight          = 50
   depends_on      = [ linode_nodebalancer_config.application ]
 }
@@ -110,7 +110,7 @@ resource "linode_nodebalancer_node" "worker" {
   label           = linode_instance.worker.label
   nodebalancer_id = linode_nodebalancer.application.id
   config_id       = linode_nodebalancer_config.application.id
-  address         = "${linode_instance.worker.private_ip_address}:80"
+  address         = "${linode_instance.worker.private_ip_address}:${var.linode.balancer.healthCheck.port}"
   weight          = 50
   depends_on      = [ linode_nodebalancer_config.application ]
 }

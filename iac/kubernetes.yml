@@ -8,8 +8,8 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: database
   namespace: demo
+  name: database
   labels:
     app: database
 spec:
@@ -23,17 +23,17 @@ spec:
         app: database
     spec:
       containers:
-        - image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-database:${BUILD_VERSION}
+        - name: database
+          image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-database:${BUILD_VERSION}
           imagePullPolicy: Always
-          name: database
       restartPolicy: Always
 ---
 # Database service port expose definition.
 apiVersion: v1
 kind: Service
 metadata:
-  name: database
   namespace: demo
+  name: database
   labels:
     app: database
 spec:
@@ -50,8 +50,8 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: backend
   namespace: demo
+  name: backend
   labels:
     app: backend
 spec:
@@ -64,17 +64,17 @@ spec:
         app: backend
     spec:
       containers:
-        - image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-backend:${BUILD_VERSION}
+        - name: backend
+          image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-backend:${BUILD_VERSION}
           imagePullPolicy: Always
-          name: backend
       restartPolicy: Always
 ---
 # Backend service port expose definition.
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
   namespace: demo
+  name: backend
   labels:
     app: backend
 spec:
@@ -95,8 +95,8 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: frontend
   namespace: demo
+  name: frontend
   labels:
     app: frontend
 spec:
@@ -109,17 +109,17 @@ spec:
         app: frontend
     spec:
       containers:
-        - image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-frontend:${BUILD_VERSION}
+        - name: frontend
+          image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-frontend:${BUILD_VERSION}
           imagePullPolicy: Always
-          name: frontend
       restartPolicy: Always
 ---
 # Frontend service port expose definition.
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
   namespace: demo
+  name: frontend
   labels:
     app: frontend
 spec:
@@ -136,8 +136,8 @@ spec:
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: ingress
   namespace: demo
+  name: ingress
 spec:
   rules:
     - http:
