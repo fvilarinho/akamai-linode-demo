@@ -10,26 +10,32 @@ if [ -z "$TERRAFORM_CMD" ]; then
   exit 1
 fi
 
-# Authenticate in Terraform Cloud to store the states.
-if [ ! -d "~/.terraform.d" ]; then
-  mkdir -p ~/.terraform.d
-fi
-
 cd iac
 
 source .env
 
-echo "[terraform]" > .edgerc
+# Create Akamai credentials file.
+echo "[default]" > .edgerc
 echo "host = $AKAMAI_EDGEGRID_HOST" >> .edgerc
 echo "access_token = $AKAMAI_EDGEGRID_ACCESS_TOKEN" >> .edgerc
 echo "client_token = $AKAMAI_EDGEGRID_CLIENT_TOKEN" >> .edgerc
 echo "client_secret = $AKAMAI_EDGEGRID_CLIENT_SECRET" >> .edgerc
-echo "account_key = $AKAMAI_EDGEGRID_ACCOUNT_KEY" >> .edgerc
+echo "account_key = $(cat variables.tf | grep account | cut -d '=' -f2 | awk '{print $2}' | tr -d \")" >> .edgerc
 
-cp -f credentials.tfrc.json /tmp
-sed -i -e 's|${TERRAFORM_CLOUD_TOKEN}|'"$TERRAFORM_CLOUD_TOKEN"'|g' /tmp/credentials.tfrc.json
-cp -f /tmp/credentials.tfrc.json ~/.terraform.d
-rm -f /tmp/credentials.tfrc.json
+# Create Terraform state persistence in Linode.
+if [ -d "~/.aws" ]; then
+  mv ~/.aws ~/.aws.old
+fi
+
+mkdir -p ~/.aws
+
+echo "[default]" > ~/.aws/config
+echo "output = json" >> ~/.aws/config
+echo "region = us-east-1" > ~/.aws/config
+
+echo "[default]" > ~/.aws/credentials
+echo "aws_access_key_id=$LINODE_OBJECT_STORAGE_ACCESS_KEY" >> ~/.aws/credentials
+echo "aws_secret_access_key=$LINODE_OBJECT_STORAGE_SECRET_KEY" >> ~/.aws/credentials
 
 # Execute the provisioning based on the IaC definition file (main.tf).
 $TERRAFORM_CMD init --upgrade
@@ -37,22 +43,9 @@ $TERRAFORM_CMD init --upgrade
 status=`echo $?`
 
 if [ $status -eq 0 ]; then
-  if [ -z "$AKAMAI_PROPERTY_ACTIVATION_NOTES" ]; then
-    GIT_CMD=`which git`
-
-    if [ -f "$GIT_CMD" ]; then
-      AKAMAI_PROPERTY_ACTIVATION_NOTES=$($GIT_CMD log -n 1 --pretty=format:'%s')
-    fi
-  fi
-
-  AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES="$($TERRAFORM_CMD state show local_file.akamai_property_activation_notes | grep content | awk -F " = " '{ print $2 }')"
-  AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES=$(echo "$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES" | sed 's/"//g')
-
   $TERRAFORM_CMD plan -var "linode_token=$LINODE_TOKEN" \
                       -var "linode_public_key=$LINODE_PUBLIC_KEY" \
-                      -var "linode_private_key=$LINODE_PRIVATE_KEY" \
-                      -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
-                      -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
+                      -var "linode_private_key=$LINODE_PRIVATE_KEY"
 
   status=`echo $?`
 
@@ -60,12 +53,17 @@ if [ $status -eq 0 ]; then
     $TERRAFORM_CMD apply -auto-approve \
                          -var "linode_token=$LINODE_TOKEN" \
                          -var "linode_public_key=$LINODE_PUBLIC_KEY" \
-                         -var "linode_private_key=$LINODE_PRIVATE_KEY" \
-                         -var "akamai_property_activation_notes=$AKAMAI_PROPERTY_ACTIVATION_NOTES" \
-                         -var "akamai_property_last_activation_notes=$AKAMAI_PROPERTY_LAST_ACTIVATION_NOTES"
+                         -var "linode_private_key=$LINODE_PRIVATE_KEY"
 
     status=`echo $?`
   fi
+fi
+
+rm -rf .edgerc
+rm -rf ~/.aws
+
+if [ -d "~/.aws.old" ]; then
+  mv ~/.aws.old ~/.aws
 fi
 
 cd ..

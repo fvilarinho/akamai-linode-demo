@@ -22,15 +22,6 @@ spec:
       labels:
         app: database
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/role
-                    operator: In
-                    values:
-                      - "manager"
       containers:
         - image: ${DOCKER_REGISTRY_URL}/${DOCKER_REGISTRY_ID}/demo-database:${BUILD_VERSION}
           imagePullPolicy: Always

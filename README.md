@@ -84,24 +84,11 @@ The tools/services used are:
 - [`Akamai`](https://www.akamai.com)
 
 Environments variables needed in this phase:
-- `TERRAFORM_CLOUD_TOKEN`: Token used to authenticate with Terraform Cloud.
 - `LINODE_TOKEN`: Token used to authenticate with Linode.
 - `LINODE_PUBLIC_KEY`: Public key used to be installed in the provisioned infrastructure.
 - `LINODE_PRIVATE_KEY`: Private key used to connect in the provisioned infrastructure.
-- `AKAMAI_EDGEGRID_HOST`: Hostname used by the Akamai Edgegrid credentials.
-- `AKAMAI_EDGEGRID_ACCESS_TOKEN`: Access token used by the Akamai Edgegrid credentials.
-- `AKAMAI_EDGEGRID_CLIENT_TOKEN`: Client token used by the Akamai Edgegrid credentials.
-- `AKAMAI_EDGEGRID_CLIENT_SECRET`: Client secret used by the Akamai Edgegrid credentials.
-
-### Purge static content
-All commands of this phase are defined in `deploy.sh` file.
-It purges the static content server by the Akamai. What is needed to be purged is defined in the 
-`iac/purgeContent.json` file.
-The tools/services used are:
-- [`Akamai Purge CLI`](https://github.com/akamai/cli-purge)
-- [`Jq`](https://stedolan.github.io/jq/)
-
-Environments variables needed in this phase:
+- `LINODE_OBJECT_STORAGE_ACCESS_KEY`: Access key used to store Terraform provisioning state in Linode.
+- `LINODE_OBJECT_STORAGE_SECRET_KEY`: Secret key used to store Terraform provisioning state in Linode.
 - `AKAMAI_EDGEGRID_HOST`: Hostname used by the Akamai Edgegrid credentials.
 - `AKAMAI_EDGEGRID_ACCESS_TOKEN`: Access token used by the Akamai Edgegrid credentials.
 - `AKAMAI_EDGEGRID_CLIENT_TOKEN`: Client token used by the Akamai Edgegrid credentials.
