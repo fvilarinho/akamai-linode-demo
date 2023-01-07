@@ -79,6 +79,19 @@
             "options": {
                 "enabled": true
             }
+        },
+        {
+            "name": "sureRoute",
+            "options": {
+                "enabled": true,
+                "type": "PERFORMANCE",
+                "toHostStatus": "INCOMING_HH",
+                "raceStatTtl": "30m",
+                "forceSslForward": false,
+                "enableCustomKey": false,
+                "testObjectUrl": "/sureroute-test-object.html",
+                "srDownloadLinkTitle": ""
+            }
         }
     ],
     "criteria": [],
